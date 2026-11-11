@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 2（進階）：高階 UI 品味校準 — 破除隱性 AI 套版感</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-amber-500/20 text-amber-300">進階實戰 Lv.2</span>
+        <h1 class="text-base font-semibold text-white">破除「隱性 AI 套版感」— API 節點監控與部署面板</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          典型 AI 生成版 (0/5)
+        </button>
+        <button onclick="applyPreset('unslop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          Linear / Stripe 級工藝 (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Split Workspace -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      <!-- Left: Live Rendered Real Page Canvas -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-6 flex items-center justify-center min-h-[400px]">
+        <div id="card-root" class="w-full max-w-md bg-white rounded-xl p-5 border border-indigo-200 shadow-lg transition-all duration-300 text-slate-900">
+          <!-- Top Bar -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+              <div id="icon-box" class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                ⚡
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 id="panel-title" class="text-base font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    Edge API Gateway
+                  </h3>
+                  <span id="status-badge" class="px-2 py-0.5 text-xs font-bold rounded-full bg-green-500 text-white animate-pulse">
+                    HEALTHY
+                  </span>
+                </div>
+                <p id="panel-subtitle" class="text-xs text-gray-500">us-east-1 · Production Cluster</p>
+              </div>
+            </div>
+
+            <button id="deploy-btn" class="px-3 py-1.5 text-xs font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md hover:scale-105 transition-transform">
+              ✨ 重新部署
+            </button>
+          </div>
+
+          <!-- Metric Strip -->
+          <div id="metrics-grid" class="grid grid-cols-3 gap-2.5 mb-4">
+            <div id="metric-1" class="bg-indigo-50/70 border border-indigo-200 rounded-lg p-2.5 text-center">
+              <div id="m1-label" class="text-xs font-bold text-indigo-900">P99 延遲</div>
+              <div id="m1-val" class="text-lg font-extrabold text-indigo-600 mt-0.5">42.8ms</div>
+              <div id="m1-delta" class="text-xs font-bold text-green-600">↓ 12.4%</div>
+            </div>
+            <div id="metric-2" class="bg-purple-50/70 border border-purple-200 rounded-lg p-2.5 text-center">
+              <div id="m2-label" class="text-xs font-bold text-purple-900">每秒請求</div>
+              <div id="m2-val" class="text-lg font-extrabold text-purple-600 mt-0.5">14,892 rps</div>
+              <div id="m2-delta" class="text-xs font-bold text-green-600">↑ 8.1%</div>
+            </div>
+            <div id="metric-3" class="bg-blue-50/70 border border-blue-200 rounded-lg p-2.5 text-center">
+              <div id="m3-label" class="text-xs font-bold text-blue-900">錯誤率</div>
+              <div id="m3-val" class="text-lg font-extrabold text-blue-600 mt-0.5">0.02%</div>
+              <div id="m3-delta" class="text-xs font-bold text-gray-500">持平</div>
+            </div>
+          </div>
+
+          <!-- Recent Endpoints List -->
+          <div id="list-container" class="border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+            <div id="row-1" class="group flex items-center justify-between p-2.5 border-b border-gray-300 bg-white hover:scale-[1.02] transition-all">
+              <div class="flex items-center gap-2">
+                <span id="method-1" class="px-1.5 py-0.5 text-xs font-bold rounded bg-blue-600 text-white">POST</span>
+                <span id="path-1" class="text-xs font-semibold text-gray-900">/v2/checkout/sessions</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="lat-1" class="text-xs font-bold text-gray-700">38ms</span>
+                <button id="act-1" class="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 font-semibold rounded border border-indigo-300">
+                  Trace
+                </button>
+              </div>
+            </div>
+            <div id="row-2" class="group flex items-center justify-between p-2.5 border-b border-gray-300 bg-white hover:scale-[1.02] transition-all">
+              <div class="flex items-center gap-2">
+                <span id="method-2" class="px-1.5 py-0.5 text-xs font-bold rounded bg-green-600 text-white">GET</span>
+                <span id="path-2" class="text-xs font-semibold text-gray-900">/v2/customers/balance</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="lat-2" class="text-xs font-bold text-gray-700">19ms</span>
+                <button id="act-2" class="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 font-semibold rounded border border-indigo-300">
+                  Trace
+                </button>
+              </div>
+            </div>
+            <div id="row-3" class="group flex items-center justify-between p-2.5 bg-white hover:scale-[1.02] transition-all">
+              <div class="flex items-center gap-2">
+                <span id="method-3" class="px-1.5 py-0.5 text-xs font-bold rounded bg-amber-500 text-white">PUT</span>
+                <span id="path-3" class="text-xs font-semibold text-gray-900">/v2/webhooks/rotate</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="lat-3" class="text-xs font-bold text-gray-700">114ms</span>
+                <button id="act-3" class="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 font-semibold rounded border border-indigo-300">
+                  Trace
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: 5 Advanced Design Linter Switches -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-1">
+          進階審閱：沒有純黑粗框，為什麼還是像「AI 廉價套版」？點擊拆解：
+        </div>
+
+        <button onclick="toggleRule('degradient')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 戒除「AI 紫藍漸層」與閃爍徽章</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除漸層字/漸層鈕/✨符號，改用沉穩深色與低彩度語意環</div>
+          </div>
+          <span id="status-degradient" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">AI 套版</span>
+        </button>
+
+        <button onclick="toggleRule('unnest')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 破除「卡片套娃 (Card-in-Card)」</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除三色小方框，改用無框水平留白與單一柔和底板</div>
+          </div>
+          <span id="status-unnest" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">AI 套版</span>
+        </button>
+
+        <button onclick="toggleRule('tabular')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 等寬數據與單位降階 (Tabular & Baseline)</div>
+            <div class="text-xs text-slate-400 mt-0.5">套用 tabular-nums 與 font-mono 路徑，弱化 ms/rps 單位字重</div>
+          </div>
+          <span id="status-tabular" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">AI 套版</span>
+        </button>
+
+        <button onclick="toggleRule('dividers')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 減法分割線與微光邊界 (Hairline Depth)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除生硬列表外框，改用 ring-slate-900/5 與多層物理柔光</div>
+          </div>
+          <span id="status-dividers" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">AI 套版</span>
+        </button>
+
+        <button onclick="toggleRule('disclosure')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 漸進式揭露取代整行放大 (Hover Reveal)</div>
+            <div class="text-xs text-slate-400 mt-0.5">廢除廉價 scale-105，改為滑鼠移入時平滑浮現 Trace 按鈕</div>
+          </div>
+          <span id="status-disclosure" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">AI 套版</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      degradient: false,
+      unnest: false,
+      tabular: false,
+      dividers: false,
+      disclosure: false
+    };
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'unslop';
+      Object.keys(state).forEach(k => state[k] = val);
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '高階工藝';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = 'AI 套版';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      const card = document.getElementById('card-root');
+      const iconBox = document.getElementById('icon-box');
+      const title = document.getElementById('panel-title');
+      const subtitle = document.getElementById('panel-subtitle');
+      const badge = document.getElementById('status-badge');
+      const deployBtn = document.getElementById('deploy-btn');
+
+      if (state.degradient) {
+        iconBox.className = 'w-8 h-8 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-700 text-xs font-semibold';
+        iconBox.textContent = '⌘';
+        title.className = 'text-sm font-semibold text-slate-900 tracking-tight';
+        subtitle.className = 'text-xs text-slate-400 mt-0.5';
+        badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-600/20';
+        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>99.98%';
+        deployBtn.className = 'px-3 py-1.5 text-xs font-medium text-white rounded-lg bg-slate-900 hover:bg-slate-800 shadow-sm transition-all duration-200 active:scale-95';
+        deployBtn.textContent = 'Redeploy';
+      } else {
+        iconBox.className = 'w-9 h-9 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md';
+        iconBox.textContent = '⚡';
+        title.className = 'text-base font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent';
+        subtitle.className = 'text-xs text-gray-500';
+        badge.className = 'px-2 py-0.5 text-xs font-bold rounded-full bg-green-500 text-white animate-pulse';
+        badge.textContent = 'HEALTHY';
+        deployBtn.className = 'px-3 py-1.5 text-xs font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md hover:scale-105 transition-transform';
+        deployBtn.textContent = '✨ 重新部署';
+      }
+
+      const metricsGrid = document.getElementById('metrics-grid');
+      const m1 = document.getElementById('metric-1');
+      const m2 = document.getElementById('metric-2');
+      const m3 = document.getElementById('metric-3');
+      if (state.unnest) {
+        metricsGrid.className = 'grid grid-cols-3 gap-4 py-3.5 px-4 mb-5 rounded-xl bg-slate-50/90';
+        m1.className = 'text-left';
+        m2.className = 'text-left border-l border-slate-200/70 pl-4';
+        m3.className = 'text-left border-l border-slate-200/70 pl-4';
+      } else {
+        metricsGrid.className = 'grid grid-cols-3 gap-2.5 mb-4';
+        m1.className = 'bg-indigo-50/70 border border-indigo-200 rounded-lg p-2.5 text-center';
+        m2.className = 'bg-purple-50/70 border border-purple-200 rounded-lg p-2.5 text-center';
+        m3.className = 'bg-blue-50/70 border border-blue-200 rounded-lg p-2.5 text-center';
+      }
+
+      const m1Label = document.getElementById('m1-label');
+      const m2Label = document.getElementById('m2-label');
+      const m3Label = document.getElementById('m3-label');
+      const m1Val = document.getElementById('m1-val');
+      const m2Val = document.getElementById('m2-val');
+      const m3Val = document.getElementById('m3-val');
+      const m1Delta = document.getElementById('m1-delta');
+      const m2Delta = document.getElementById('m2-delta');
+      const m3Delta = document.getElementById('m3-delta');
+
+      if (state.tabular) {
+        [m1Label, m2Label, m3Label].forEach(el => el.className = 'text-xs font-normal text-slate-500');
+        m1Val.className = 'text-base font-semibold text-slate-900 tabular-nums tracking-tight mt-0.5';
+        m1Val.innerHTML = '42.8<span class="text-xs font-normal text-slate-400 ml-0.5">ms</span>';
+        m2Val.className = 'text-base font-semibold text-slate-900 tabular-nums tracking-tight mt-0.5';
+        m2Val.innerHTML = '14,892<span class="text-xs font-normal text-slate-400 ml-0.5">rps</span>';
+        m3Val.className = 'text-base font-semibold text-slate-900 tabular-nums tracking-tight mt-0.5';
+        m3Val.innerHTML = '0.02<span class="text-xs font-normal text-slate-400 ml-0.5">%</span>';
+        m1Delta.className = 'text-xs font-medium text-emerald-600 tabular-nums mt-0.5';
+        m2Delta.className = 'text-xs font-medium text-emerald-600 tabular-nums mt-0.5';
+        m3Delta.className = 'text-xs font-normal text-slate-400 mt-0.5';
+      } else {
+        m1Label.className = 'text-xs font-bold text-indigo-900';
+        m2Label.className = 'text-xs font-bold text-purple-900';
+        m3Label.className = 'text-xs font-bold text-blue-900';
+        m1Val.className = 'text-lg font-extrabold text-indigo-600 mt-0.5';
+        m1Val.textContent = '42.8ms';
+        m2Val.className = 'text-lg font-extrabold text-purple-600 mt-0.5';
+        m2Val.textContent = '14,892 rps';
+        m3Val.className = 'text-lg font-extrabold text-blue-600 mt-0.5';
+        m3Val.textContent = '0.02%';
+        m1Delta.className = 'text-xs font-bold text-green-600';
+        m2Delta.className = 'text-xs font-bold text-green-600';
+        m3Delta.className = 'text-xs font-bold text-gray-500';
+      }
+
+      const listContainer = document.getElementById('list-container');
+      if (state.dividers) {
+        card.className = 'w-full max-w-md bg-white rounded-2xl p-6 ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_32px_-4px_rgba(15,23,42,0.06)] transition-all duration-300 text-slate-900';
+        listContainer.className = 'flex flex-col gap-1';
+      } else {
+        card.className = 'w-full max-w-md bg-white rounded-xl p-5 border border-indigo-200 shadow-lg transition-all duration-300 text-slate-900';
+        listContainer.className = 'border border-gray-300 rounded-lg overflow-hidden bg-gray-50';
+      }
+
+      const methods = [
+        { id: 1, slop: 'px-1.5 py-0.5 text-xs font-bold rounded bg-blue-600 text-white', clean: 'w-11 text-center py-0.5 text-xs font-mono font-medium rounded bg-sky-500/10 text-sky-700' },
+        { id: 2, slop: 'px-1.5 py-0.5 text-xs font-bold rounded bg-green-600 text-white', clean: 'w-11 text-center py-0.5 text-xs font-mono font-medium rounded bg-emerald-500/10 text-emerald-700' },
+        { id: 3, slop: 'px-1.5 py-0.5 text-xs font-bold rounded bg-amber-500 text-white', clean: 'w-11 text-center py-0.5 text-xs font-mono font-medium rounded bg-amber-500/10 text-amber-700' }
+      ];
+
+      methods.forEach((m, idx) => {
+        const row = document.getElementById('row-' + m.id);
+        const methodEl = document.getElementById('method-' + m.id);
+        const pathEl = document.getElementById('path-' + m.id);
+        const latEl = document.getElementById('lat-' + m.id);
+        const actEl = document.getElementById('act-' + m.id);
+
+        methodEl.className = state.degradient ? m.clean : m.slop;
+        pathEl.className = state.tabular
+          ? 'text-xs font-mono text-slate-700'
+          : 'text-xs font-semibold text-gray-900';
+        latEl.className = state.tabular
+          ? 'text-xs font-mono tabular-nums text-slate-400'
+          : 'text-xs font-bold text-gray-700';
+
+        let rowClasses = ['group', 'flex', 'items-center', 'justify-between', 'transition-all', 'duration-200'];
+        if (state.dividers) {
+          rowClasses.push('py-2', 'px-2.5', '-mx-2.5', 'rounded-lg', 'hover:bg-slate-50');
+        } else {
+          rowClasses.push('p-2.5', 'bg-white');
+          if (idx < 2) rowClasses.push('border-b', 'border-gray-300');
+        }
+        if (!state.disclosure) {
+          rowClasses.push('hover:scale-[1.02]');
+        }
+        row.className = rowClasses.join(' ');
+
+        if (state.disclosure) {
+          actEl.className = 'opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition-all duration-200 px-2 py-0.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white rounded-md shadow-sm ring-1 ring-slate-900/10';
+          actEl.textContent = 'Trace →';
+        } else {
+          actEl.className = 'px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 font-semibold rounded border border-indigo-300';
+          actEl.textContent = 'Trace';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

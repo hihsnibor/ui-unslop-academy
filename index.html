@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI/UX 架構師品味與 Unslop 實戰學院 (Course 1–6)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+  <!-- Sticky Top Navigation Header -->
+  <header class="sticky top-0 z-30 bg-zinc-950/85 backdrop-blur-xl border-b border-white/[0.07]">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <!-- Brand Title -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-indigo-500/15 ring-1 ring-inset ring-indigo-400/30 flex items-center justify-center text-indigo-300 font-mono text-xs font-semibold">
+            U/S
+          </div>
+          <div>
+            <h1 class="text-sm font-semibold text-zinc-100 tracking-tight">UI/UX Unslop 實戰學院</h1>
+            <p class="text-xs text-zinc-400">6 堂互動式真實頁面訓練 · 支援數字鍵 <kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">1</kbd>–<kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">6</kbd> 快速切換</p>
+          </div>
+        </div>
+        <a id="direct-link-mobile" href="course1.html" target="_blank" class="md:hidden px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-800 text-zinc-300 ring-1 ring-white/10">
+          獨立視窗 ↗
+        </a>
+      </div>
+
+      <!-- Course Tabs (course1 .. course6 + playbook) -->
+      <nav class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5" aria-label="Course Tabs">
+        <button onclick="switchCourse('course1')" id="tab-course1" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 1 · 基礎去 AI 味
+        </button>
+        <button onclick="switchCourse('course2')" id="tab-course2" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 2 · 破除隱性套版
+        </button>
+        <button onclick="switchCourse('course3')" id="tab-course3" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 3 · 狀態機零跳動
+        </button>
+        <button onclick="switchCourse('course4')" id="tab-course4" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 4 · 體感零延遲
+        </button>
+        <button onclick="switchCourse('course5')" id="tab-course5" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 5 · 暗色光學階層
+        </button>
+        <button onclick="switchCourse('course6')" id="tab-course6" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 6 · 高密度資料表
+        </button>
+        <button onclick="switchCourse('playbook')" id="tab-playbook" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          📖 總覽手冊
+        </button>
+      </nav>
+    </div>
+
+    <!-- Sub-bar with Course Summary & Direct URL -->
+    <div class="bg-zinc-900/70 border-t border-white/[0.04]">
+      <div class="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span id="course-badge" class="px-2 py-0.5 rounded font-mono text-xs bg-indigo-500/15 text-indigo-300 ring-1 ring-inset ring-indigo-400/20">COURSE 1</span>
+          <span id="course-desc" class="text-zinc-300">極致留白、擴散柔光陰影、去純黑粗框、字重對比與平滑微動效</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a id="direct-link" href="course1.html" target="_blank" class="hidden md:inline-flex items-center gap-1 text-zinc-400 hover:text-zinc-100 font-mono transition">
+            <span>開啟單一檔案：</span>
+            <span id="direct-filename" class="underline text-indigo-300">course1.html ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Stage -->
+  <main class="flex-1 flex flex-col max-w-6xl w-full mx-auto px-2 sm:px-4 py-4">
+    <!-- Iframe Container for Course 1 - 6 -->
+    <div id="iframe-wrapper" class="flex-1 w-full rounded-2xl overflow-hidden ring-1 ring-white/[0.08] bg-slate-900 shadow-2xl">
+      <iframe
+        id="course-frame"
+        src="course1.html"
+        class="w-full min-h-[760px] md:min-h-[680px] border-0"
+        title="Interactive UI Course Stage"
+      ></iframe>
+    </div>
+
+    <!-- Playbook Overview Panel (Hidden unless #playbook is active) -->
+    <div id="playbook-wrapper" class="hidden flex-1 w-full rounded-2xl p-6 bg-zinc-900/90 ring-1 ring-white/[0.08] shadow-2xl space-y-6">
+      <div class="border-b border-white/[0.07] pb-4 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-semibold text-zinc-100">UI/UX 架構師品味與 Unslop 29 條黃金律</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">點擊任一卡片可直接跳轉至該堂互動實驗室</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div onclick="switchCourse('course1')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-indigo-500/15 text-indigo-300">Course 1 · Lv.1</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">基礎去 AI 味 (Fundamental Unslop)</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 容器內距從 <code class="text-zinc-200">p-6 / p-8</code> 起跳</li>
+            <li>• 多層次柔光 <code class="text-zinc-200">0_8px_30px_rgb(0,0,0,0.06)</code></li>
+            <li>• 禁用純黑與粗框，改用 <code class="text-zinc-200">bg-slate-50</code> 分區</li>
+            <li>• 字重與深淺對比取代單純放大字級</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course2')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-amber-500/15 text-amber-300">Course 2 · Lv.2</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">破除「隱性 AI 套版感」</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 戒除紫藍漸層字與 ✨ 符號</li>
+            <li>• 破除 Card-in-Card 三色小方框套娃</li>
+            <li>• 數據強制 <code class="text-zinc-200">tabular-nums</code> 並將單位降階</li>
+            <li>• 次要按鈕採用 <code class="text-zinc-200">group-hover</code> 漸進式揭露</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course3')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-emerald-500/15 text-emerald-300">Course 3 · Lv.3</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">狀態機驅動 UI 與零版面跳動</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 鎖定容器高度信封，達成 <code class="text-zinc-200">Zero-CLS</code></li>
+            <li>• 驗章寫入階段鎖定取消鈕，防止髒資料</li>
+            <li>• 區分局部缺漏 <code class="text-zinc-200">Warning</code> 與斷點續傳 <code class="text-zinc-200">Error</code></li>
+            <li>• 網路中斷保留 68% 進度，不強迫歸零重來</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course4')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-purple-500/15 text-purple-300">Course 4 · Lv.4</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">體感零延遲架構 (Optimistic UI)</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 1:1 幾何對齊骨架屏取代轉圈圈地獄</li>
+            <li>• 0ms 樂觀更新 + 失敗微震動平滑回滾</li>
+            <li>• 晚懲罰（onBlur）、早獎勵（onInput）表單驗證</li>
+            <li>• 定寬按鈕內嵌變形，不推擠相鄰元素</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course5')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-cyan-500/15 text-cyan-300">Course 5 · Lv.5</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">暗黑模式光學階層與同心圓角</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 海拔越高表面越亮 (<code class="text-zinc-200">zinc-950 → 900 → 800</code>)</li>
+            <li>• 頂部 1px 鏡面內高光取代四周灰框</li>
+            <li>• 同心圓角公式：<code class="text-zinc-200">R_in = R_out - Padding</code></li>
+            <li>• 暗色語意標籤提亮降彩，防視網膜眩光</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course6')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-sky-500/15 text-sky-300">Course 6 · Lv.6</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">高密度資料表格與情境式浮動島</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 文字靠左、金額靠右對齊小數點</li>
+            <li>• 低語式表頭 (<code class="text-zinc-200">text-slate-400</code>) 凸顯數據</li>
+            <li>• 雙行複合儲存格摺疊關聯欄位</li>
+            <li>• 勾選列時才從底部升起情境式批量操作島</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const COURSES = {
+      course1: {
+        file: 'course1.html',
+        badge: 'COURSE 1 · Lv.1',
+        desc: '基礎去 AI 味：極致留白、擴散柔光陰影、去純黑粗框、字重對比與平滑微動效'
+      },
+      course2: {
+        file: 'course2.html',
+        badge: 'COURSE 2 · Lv.2',
+        desc: '破除隱性套版感：戒除紫藍漸層、拆解卡片套娃、tabular-nums 數據對齊與 Hover 漸進揭露'
+      },
+      course3: {
+        file: 'course3.html',
+        badge: 'COURSE 3 · Lv.3',
+        desc: '狀態機驅動 UI：7 狀態確定性切換、Zero-CLS 零版面跳動鎖定與 68% 斷點續傳邊界恢復'
+      },
+      course4: {
+        file: 'course4.html',
+        badge: 'COURSE 4 · Lv.4',
+        desc: '體感零延遲架構：1:1 幾何骨架屏、0ms 樂觀更新自動回滾、晚懲罰早獎勵驗證與定寬變形按鈕'
+      },
+      course5: {
+        file: 'course5.html',
+        badge: 'COURSE 5 · Lv.5',
+        desc: '暗色光學階層：海拔亮度階梯、頂部 1px 鏡面微高光、同心圓角公式與立體 Kbd 鍵帽'
+      },
+      course6: {
+        file: 'course6.html',
+        badge: 'COURSE 6 · Lv.6',
+        desc: '高密度資料表格：左右視覺掃描軸線、低語式表頭、雙行複合儲存格與底部情境浮動島'
+      },
+      playbook: {
+        file: null,
+        badge: 'PLAYBOOK · 總覽',
+        desc: '全部 6 堂課的核心設計規則速查表（點擊任一卡片立即進入實驗室）'
+      }
+    };
+
+    function switchCourse(id, updateHash = true) {
+      if (!COURSES[id]) id = 'course1';
+      if (updateHash) {
+        history.replaceState(null, '', '#' + id);
+      }
+
+      // Update tabs styling
+      Object.keys(COURSES).forEach(k => {
+        const btn = document.getElementById('tab-' + k);
+        if (k === id) {
+          btn.className = 'shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/[0.1] text-white ring-1 ring-white/[0.15] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] transition-all';
+        } else {
+          btn.className = 'shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] transition-all';
+        }
+      });
+
+      const meta = COURSES[id];
+      document.getElementById('course-badge').textContent = meta.badge;
+      document.getElementById('course-desc').textContent = meta.desc;
+
+      const iframeWrap = document.getElementById('iframe-wrapper');
+      const playbookWrap = document.getElementById('playbook-wrapper');
+      const frame = document.getElementById('course-frame');
+      const directLink = document.getElementById('direct-link');
+      const directMobile = document.getElementById('direct-link-mobile');
+      const directFilename = document.getElementById('direct-filename');
+
+      if (id === 'playbook') {
+        iframeWrap.classList.add('hidden');
+        playbookWrap.classList.remove('hidden');
+        directLink.classList.add('hidden');
+        directMobile.classList.add('hidden');
+      } else {
+        playbookWrap.classList.add('hidden');
+        iframeWrap.classList.remove('hidden');
+        directLink.classList.remove('hidden');
+        directMobile.classList.remove('hidden');
+        if (frame.getAttribute('src') !== meta.file) {
+          frame.setAttribute('src', meta.file);
+        }
+        directLink.href = meta.file;
+        directMobile.href = meta.file;
+        directFilename.textContent = meta.file + ' ↗';
+      }
+    }
+
+    // Keyboard shortcuts 1-6 and P
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (e.key >= '1' && e.key <= '6') {
+        switchCourse('course' + e.key);
+      } else if (e.key.toLowerCase() === 'p') {
+        switchCourse('playbook');
+      }
+    });
+
+    // Load initial tab from URL hash (?tab=course2 or #course2)
+    function initFromUrl() {
+      const hash = window.location.hash.replace('#', '');
+      const params = new URLSearchParams(window.location.search);
+      const target = hash || params.get('tab') || 'course1';
+      switchCourse(COURSES[target] ? target : 'course1', false);
+    }
+
+    window.addEventListener('hashchange', initFromUrl);
+    initFromUrl();
+  </script>
+</body>
+</html>

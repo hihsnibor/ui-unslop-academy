@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 6（Lv.6）：高密度資料表格與情境式浮動島工藝</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-sky-500/20 text-sky-300">高密度資訊 Lv.6</span>
+        <h1 class="text-base font-semibold text-white">高密度資料表格 (Data Table) — 對齊軸線、複合欄位與浮動批量島</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          AI 傳統報表風 (0/5)
+        </button>
+        <button onclick="applyPreset('craft')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          Stripe / Linear 表格工藝 (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <!-- Left: Real Page Data Table Stage -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-5 flex flex-col justify-between min-h-[395px] text-slate-900 relative overflow-hidden">
+        <div id="table-card" class="w-full bg-white rounded-xl border-2 border-gray-400 shadow-md overflow-hidden transition-all duration-300">
+          <div class="px-4 py-3 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-900">企業帳單與清算流水</h3>
+              <p class="text-xs text-slate-400">勾選左側核取方塊可測試「批量操作」互動</p>
+            </div>
+            <div id="static-bulk-bar" class="flex items-center gap-1">
+              <button class="px-2 py-1 text-xs font-bold bg-red-600 text-white rounded opacity-50 cursor-not-allowed">批量退款</button>
+              <button class="px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded opacity-50 cursor-not-allowed">匯出 CSV</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse" id="main-table"></table>
+          </div>
+        </div>
+
+        <div
+          id="floating-island"
+          class="pointer-events-none opacity-0 translate-y-4 transition-all duration-300 ease-out mx-auto mt-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-[0_12px_30px_rgba(15,23,42,0.28)] ring-1 ring-white/10 flex items-center gap-3"
+        >
+          <span class="text-xs font-medium text-slate-300"><strong id="selected-count" class="text-white tabular-nums">1</strong> 筆已選取</span>
+          <div class="h-3 w-[1px] bg-slate-700"></div>
+          <button onclick="clearSelection()" class="text-xs font-medium text-emerald-300 hover:text-emerald-200 transition">匯出對帳單</button>
+          <button onclick="clearSelection()" class="text-xs font-medium text-rose-300 hover:text-rose-200 transition">標記異常</button>
+          <button onclick="clearSelection()" class="px-1.5 py-0.5 text-xs font-mono text-slate-400 hover:text-white bg-slate-800 rounded">ESC</button>
+        </div>
+      </div>
+
+      <!-- Right: 5 Data Table Architecture Linter Rules -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          為什麼 AI 寫的表格總像「粗糙的後台管理系統」？點擊右側逐一改造：
+        </div>
+
+        <button onclick="toggleRule('alignment')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 視覺掃描軸線 (Left Text, Right Numbers)</div>
+            <div class="text-xs text-slate-400 mt-0.5">禁止全置中！文字靠左、金額靠右對齊小數點 (tabular-nums)</div>
+          </div>
+          <span id="status-alignment" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('header')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 低語式表頭 (Whisper-Quiet Header)</div>
+            <div class="text-xs text-slate-400 mt-0.5">廢除黑底白字粗表頭，改用 text-xs text-slate-400 凸顯資料本身</div>
+          </div>
+          <span id="status-header" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('zebra')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 消除斑馬紋與垂直鐵格 (No Zebra / Vertical Lines)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除灰白交錯斑馬紋與直線，改用極淡橫線 divide-slate-100</div>
+          </div>
+          <span id="status-zebra" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('composite')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 雙行複合儲存格 (Composite Cell Folding)</div>
+            <div class="text-xs text-slate-400 mt-0.5">將「客戶名稱」與「信箱」上下疊合於同欄，消滅水平捲軸擁擠感</div>
+          </div>
+          <span id="status-composite" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('island')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 情境式底部浮動島 (Contextual Bulk Island)</div>
+            <div class="text-xs text-slate-400 mt-0.5">隱藏頂部禁用按鈕，勾選任一列時才從底部平滑升起深色操作島</div>
+          </div>
+          <span id="status-island" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      alignment: false,
+      header: false,
+      zebra: false,
+      composite: false,
+      island: false
+    };
+
+    let selectedRows = new Set([0]);
+
+    const ROWS = [
+      { id: 'INV-2049', name: 'Vercel Inc.', email: 'billing@vercel.com', status: 'Paid', amount: '$12,400.00', subAmount: 'USD' },
+      { id: 'INV-2050', name: 'Linear Orbit', email: 'finance@linear.app', status: 'Paid', amount: '$3,850.50', subAmount: 'USD' },
+      { id: 'INV-2051', name: 'Raycast Ltd.', email: 'accounts@raycast.com', status: 'Pending', amount: '$920.00', subAmount: 'USD' },
+      { id: 'INV-2052', name: 'Stripe Global', email: 'treasury@stripe.com', status: 'Paid', amount: '$48,100.00', subAmount: 'USD' }
+    ];
+
+    function toggleRow(idx) {
+      if (selectedRows.has(idx)) {
+        selectedRows.delete(idx);
+      } else {
+        selectedRows.add(idx);
+      }
+      render();
+    }
+
+    function clearSelection() {
+      selectedRows.clear();
+      render();
+    }
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'craft';
+      Object.keys(state).forEach(k => state[k] = val);
+      if (val && selectedRows.size === 0) selectedRows.add(0);
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '已優化';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      const tableCard = document.getElementById('table-card');
+      const staticBulk = document.getElementById('static-bulk-bar');
+      const island = document.getElementById('floating-island');
+      const countEl = document.getElementById('selected-count');
+      const table = document.getElementById('main-table');
+
+      tableCard.className = state.zebra
+        ? 'w-full bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_32px_-4px_rgba(15,23,42,0.06)] overflow-hidden transition-all duration-300'
+        : 'w-full bg-white rounded-xl border-2 border-gray-400 shadow-md overflow-hidden transition-all duration-300';
+
+      if (state.island) {
+        staticBulk.className = 'hidden';
+        countEl.textContent = selectedRows.size;
+        if (selectedRows.size > 0) {
+          island.className = 'opacity-100 translate-y-0 transition-all duration-300 ease-out mx-auto mt-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-[0_12px_30px_rgba(15,23,42,0.28)] ring-1 ring-white/10 flex items-center gap-3';
+        } else {
+          island.className = 'pointer-events-none opacity-0 translate-y-3 transition-all duration-200 ease-in mx-auto mt-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white flex items-center gap-3';
+        }
+      } else {
+        staticBulk.className = 'flex items-center gap-1';
+        island.className = 'pointer-events-none opacity-0 translate-y-4 transition-all duration-200 mx-auto mt-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white flex items-center gap-3';
+      }
+
+      const thBase = state.header
+        ? 'py-2.5 px-3 text-xs font-medium text-slate-400 bg-slate-50/70 border-b border-slate-100'
+        : 'py-2 px-2 text-xs font-bold text-white bg-slate-800 border border-gray-500';
+
+      const alignLeft = state.alignment ? 'text-left' : 'text-center';
+      const alignRight = state.alignment ? 'text-right' : 'text-center';
+
+      let theadHTML = `<thead><tr>
+        <th class="${thBase} w-8 text-center">✓</th>
+        <th class="${thBase} ${alignLeft}">客戶${state.composite ? '' : '名稱'}</th>
+        ${state.composite ? '' : `<th class="${thBase} ${alignLeft}">電子信箱</th>`}
+        <th class="${thBase} ${alignLeft}">狀態</th>
+        <th class="${thBase} ${alignRight}">清算金額</th>
+      </tr></thead>`;
+
+      let tbodyHTML = `<tbody class="${state.zebra ? 'divide-y divide-slate-100' : ''}">`;
+
+      ROWS.forEach((r, idx) => {
+        const checked = selectedRows.has(idx);
+        const rowBg = state.zebra
+          ? (checked ? 'bg-indigo-50/40 hover:bg-indigo-50/60' : 'bg-white hover:bg-slate-50/80')
+          : (idx % 2 === 1 ? 'bg-gray-200' : 'bg-white');
+
+        const cellBorder = state.zebra ? 'py-2.5 px-3' : 'py-2 px-2 border border-gray-400';
+
+        let badgeHTML = '';
+        if (state.zebra) {
+          badgeHTML = r.status === 'Paid'
+            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>已入帳</span>`
+            : `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/10 text-amber-700 ring-1 ring-inset ring-amber-600/20"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>清算中</span>`;
+        } else {
+          badgeHTML = r.status === 'Paid'
+            ? `<span class="px-1.5 py-0.5 text-xs font-bold bg-green-600 text-white rounded">PAID</span>`
+            : `<span class="px-1.5 py-0.5 text-xs font-bold bg-yellow-500 text-black rounded">PENDING</span>`;
+        }
+
+        let customerCells = '';
+        if (state.composite) {
+          customerCells = `
+            <td class="${cellBorder} ${alignLeft}">
+              <div class="text-xs font-semibold text-slate-900 leading-tight">${r.name}</div>
+              <div class="text-xs text-slate-400 leading-tight mt-0.5">${r.email}</div>
+            </td>
+          `;
+        } else {
+          customerCells = `
+            <td class="${cellBorder} ${alignLeft} text-xs font-bold text-black">${r.name}</td>
+            <td class="${cellBorder} ${alignLeft} text-xs text-gray-700">${r.email}</td>
+          `;
+        }
+
+        const amountHTML = state.alignment
+          ? `<span class="text-xs font-semibold text-slate-900 tabular-nums">${r.amount}</span><span class="text-xs text-slate-400 ml-1">${r.subAmount}</span>`
+          : `<span class="text-xs font-bold text-black">${r.amount}</span>`;
+
+        tbodyHTML += `
+          <tr onclick="toggleRow(${idx})" class="${rowBg} cursor-pointer transition-colors">
+            <td class="${cellBorder} text-center">
+              <input type="checkbox" ${checked ? 'checked' : ''} onclick="event.stopPropagation(); toggleRow(${idx})" class="rounded border-slate-300 text-slate-900 focus:ring-0 cursor-pointer" />
+            </td>
+            ${customerCells}
+            <td class="${cellBorder} ${alignLeft}">${badgeHTML}</td>
+            <td class="${cellBorder} ${alignRight}">${amountHTML}</td>
+          </tr>
+        `;
+      });
+
+      tbodyHTML += `</tbody>`;
+      table.innerHTML = theadHTML + tbodyHTML;
+    }
+
+    render();
+  </script>
+</body>
+</html>

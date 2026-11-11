@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 3：狀態機驅動 UI 與邊界防禦架構</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-emerald-500/20 text-emerald-300">模組 3：狀態機驅動 UI</span>
+        <h1 class="text-base font-semibold text-white">企業憑證匯入引擎 — 7 狀態切換與零跳動架構 (Zero-CLS)</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-cls" onclick="toggleZeroCLS()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition">
+          🔒 零版面跳動 (Zero-CLS)：已開啟
+        </button>
+        <button onclick="runAutoFlow()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 transition">
+          ▶ 自動播放完整狀態流
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <!-- Left: Real Page Stage -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-6 flex flex-col items-center justify-start min-h-[390px] text-slate-900">
+        <div class="w-full max-w-md bg-white rounded-2xl p-5 ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_32px_-4px_rgba(15,23,42,0.06)] transition-all duration-300">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-900 tracking-tight">Production TLS 憑證與合約池</h3>
+              <p class="text-xs text-slate-400">支援 .pem, .crt, .pdf · 具備 SHA-256 斷點續傳</p>
+            </div>
+            <span id="state-chip" class="px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-slate-100 text-slate-600">
+              STATE: IDLE
+            </span>
+          </div>
+
+          <div id="state-envelope" class="h-[168px] flex flex-col justify-center rounded-xl bg-slate-50/90 px-4 py-3.5 transition-all duration-300 relative overflow-hidden">
+          </div>
+        </div>
+
+        <div class="w-full max-w-md mt-3 bg-white/80 rounded-xl px-4 py-2.5 ring-1 ring-slate-900/5 flex items-center justify-between transition-all duration-300">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-xs font-medium text-slate-600">下方相鄰區塊：Webhook 自動通知設定</span>
+          </div>
+          <span class="text-xs font-mono text-slate-400">觀察我是否被推擠跳動</span>
+        </div>
+      </div>
+
+      <!-- Right: State Machine Controller -->
+      <div class="md:col-span-5 flex flex-col gap-2">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          點擊切換狀態機節點（注意看左側進度延續與下方區塊穩定度）：
+        </div>
+
+        <button onclick="setState('idle')" id="tab-idle" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. IDLE（待機態）</div>
+            <div class="text-xs text-slate-400">極簡引導，不預先塞滿無關警告文字</div>
+          </div>
+          <span class="text-xs font-mono text-slate-400">0%</span>
+        </button>
+
+        <button onclick="setState('dragging')" id="tab-dragging" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. DRAGGING（拖曳磁吸態）</div>
+            <div class="text-xs text-slate-400">內縮微光環 ring-indigo-500/30，不改變外框尺寸</div>
+          </div>
+          <span class="text-xs font-mono text-indigo-400">Hover</span>
+        </button>
+
+        <button onclick="setState('uploading')" id="tab-uploading" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. UPLOADING（分塊串流 68%）</div>
+            <div class="text-xs text-slate-400">tabular-nums 等寬計數 + 隨時可暫停</div>
+          </div>
+          <span class="text-xs font-mono text-sky-400">68%</span>
+        </button>
+
+        <button onclick="setState('verifying')" id="tab-verifying" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. VERIFYING（驗章不可中斷態）</div>
+            <div class="text-xs text-slate-400">鎖定取消鈕防止髒資料，明確告知剩餘秒數</div>
+          </div>
+          <span class="text-xs font-mono text-indigo-400">100%</span>
+        </button>
+
+        <button onclick="setState('warning')" id="tab-warning" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-amber-400">5. EDGE CASE：WARNING（局部缺漏）</div>
+            <div class="text-xs text-slate-400">不強制失敗！提供「帶入預設值並繼續」</div>
+          </div>
+          <span class="text-xs font-mono text-amber-400">Warn</span>
+        </button>
+
+        <button onclick="setState('error')" id="tab-error" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-rose-400">6. EDGE CASE：ERROR（斷點續傳）</div>
+            <div class="text-xs text-slate-400">網路閃斷保留 68% 進度，不逼使用者從 0% 重傳</div>
+          </div>
+          <span class="text-xs font-mono text-rose-400">Retry</span>
+        </button>
+
+        <button onclick="setState('success')" id="tab-success" class="w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition">
+          <div>
+            <div class="text-xs font-semibold text-emerald-400">7. SUCCESS（完成與指紋預覽）</div>
+            <div class="text-xs text-slate-400">平滑展開憑證 SHA 指紋與一鍵複製</div>
+          </div>
+          <span class="text-xs font-mono text-emerald-400">Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentState = 'idle';
+    let zeroCLS = true;
+    let autoTimer = null;
+    const STATES = ['idle', 'dragging', 'uploading', 'error', 'verifying', 'warning', 'success'];
+
+    function toggleZeroCLS() {
+      zeroCLS = !zeroCLS;
+      const btn = document.getElementById('btn-cls');
+      if (zeroCLS) {
+        btn.textContent = '🔒 零版面跳動 (Zero-CLS)：已開啟';
+        btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition';
+      } else {
+        btn.textContent = '⚠️ 野生高度寫法 (高度隨狀態跳動)：已開啟';
+        btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 transition';
+      }
+      render();
+    }
+
+    function setState(s) {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      currentState = s;
+      render();
+    }
+
+    function runAutoFlow() {
+      if (autoTimer) clearInterval(autoTimer);
+      let idx = 0;
+      currentState = STATES[idx];
+      render();
+      autoTimer = setInterval(() => {
+        idx++;
+        if (idx >= STATES.length) {
+          clearInterval(autoTimer);
+          autoTimer = null;
+          return;
+        }
+        currentState = STATES[idx];
+        render();
+      }, 1300);
+    }
+
+    function render() {
+      const env = document.getElementById('state-envelope');
+      const chip = document.getElementById('state-chip');
+
+      STATES.forEach(s => {
+        const btn = document.getElementById('tab-' + s);
+        if (s === currentState) {
+          btn.className = 'w-full text-left px-3 py-2 rounded-xl border border-indigo-400/60 bg-indigo-500/15 flex items-center justify-between transition';
+        } else {
+          btn.className = 'w-full text-left px-3 py-2 rounded-xl border border-slate-700 flex items-center justify-between hover:bg-slate-700/50 transition';
+        }
+      });
+
+      const heightClass = zeroCLS ? 'h-[168px]' : 'h-auto';
+
+      if (currentState === 'idle') {
+        chip.textContent = 'STATE: IDLE';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-slate-100 text-slate-600';
+        env.className = `${heightClass} flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/90 ring-1 ring-inset ring-slate-200/80 px-4 py-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div class="w-9 h-9 rounded-xl bg-white shadow-sm ring-1 ring-slate-900/5 flex items-center justify-center text-slate-600 mb-2">↑</div>
+          <div class="text-xs font-semibold text-slate-800">拖曳憑證檔案至此，或 <span class="text-indigo-600 underline cursor-pointer" onclick="setState('uploading')">瀏覽本機檔案</span></div>
+          <div class="text-xs text-slate-400 mt-1">自動進行私鑰遮罩與端對端加密分塊</div>
+        `;
+      } else if (currentState === 'dragging') {
+        chip.textContent = 'STATE: DRAGGING';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-indigo-50 text-indigo-600';
+        env.className = `${heightClass} flex flex-col items-center justify-center text-center rounded-xl bg-indigo-50/60 ring-2 ring-inset ring-indigo-500/40 px-4 py-4 transition-all duration-200`;
+        env.innerHTML = `
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center text-sm mb-2 scale-105 transition-transform">↓</div>
+          <div class="text-xs font-semibold text-indigo-950">放開以匯入 <span class="font-mono">prod-wildcard-2026.pem</span></div>
+          <div class="text-xs text-indigo-600/80 mt-0.5">已偵測為 X.509 PEM 格式 · 2.4 MB</div>
+        `;
+      } else if (currentState === 'uploading') {
+        chip.textContent = 'STATE: UPLOADING';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-sky-50 text-sky-700';
+        env.className = `${heightClass} flex flex-col justify-between rounded-xl bg-slate-50/90 ring-1 ring-inset ring-slate-200/70 p-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs font-mono font-semibold text-slate-900">prod-wildcard-2026.pem</div>
+              <div class="text-xs text-slate-500 mt-0.5 tabular-nums">1.63 MB / 2.40 MB · 剩餘約 2 秒</div>
+            </div>
+            <span class="text-sm font-mono font-semibold text-slate-900 tabular-nums">68%</span>
+          </div>
+          <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden my-3">
+            <div class="h-full bg-slate-900 w-[68%] rounded-full transition-all duration-300"></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-400 font-mono">Chunk #14/20 encrypted</span>
+            <button onclick="setState('idle')" class="text-xs font-medium text-slate-500 hover:text-slate-800 px-2 py-1 rounded hover:bg-slate-200/60 transition">暫停並取消</button>
+          </div>
+        `;
+      } else if (currentState === 'verifying') {
+        chip.textContent = 'STATE: VERIFYING';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-indigo-50 text-indigo-700';
+        env.className = `${heightClass} flex flex-col justify-between rounded-xl bg-slate-50/90 ring-1 ring-inset ring-indigo-500/20 p-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
+              <span class="text-xs font-semibold text-slate-900">正在驗證憑證鏈與 SHA-256 簽章...</span>
+            </div>
+            <span class="text-xs font-mono text-slate-400 tabular-nums">100%</span>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white ring-1 ring-slate-900/5 font-mono text-xs text-slate-600 my-1">
+            Issuer: Let's Encrypt Authority X3 → Validating OCSP...
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-400">關鍵寫入階段，已鎖定取消操作以防憑證損毀</span>
+            <span class="text-xs font-mono text-slate-400">~1s</span>
+          </div>
+        `;
+      } else if (currentState === 'warning') {
+        chip.textContent = 'STATE: EDGE_WARNING';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-amber-500/15 text-amber-700';
+        env.className = `${heightClass} flex flex-col justify-between rounded-xl bg-amber-50/60 ring-1 ring-inset ring-amber-500/30 p-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-amber-950">偵測到缺少中繼憑證 (Intermediate CA)</span>
+              <span class="px-1.5 py-0.5 text-xs font-medium rounded bg-amber-500/15 text-amber-800">可自動修補</span>
+            </div>
+            <p class="text-xs text-amber-800/80 mt-1">舊版 Android 裝置可能無法信任此連線。系統可自動從 AIA 網址補齊中繼鏈，無需重新上傳。</p>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button onclick="setState('success')" class="px-2.5 py-1 text-xs font-medium text-amber-900 hover:bg-amber-500/15 rounded-lg transition">略過並強制啟用</button>
+            <button onclick="setState('success')" class="px-3 py-1 text-xs font-medium text-white bg-amber-700 hover:bg-amber-800 rounded-lg shadow-sm transition">自動補齊並完成 →</button>
+          </div>
+        `;
+      } else if (currentState === 'error') {
+        chip.textContent = 'STATE: EDGE_ERROR';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-rose-500/15 text-rose-700';
+        env.className = `${heightClass} flex flex-col justify-between rounded-xl bg-rose-50/50 ring-1 ring-inset ring-rose-500/25 p-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs font-semibold text-rose-950">網路連線於分塊 #14 中斷 (ERR_NETWORK_CHANGED)</div>
+              <div class="text-xs text-rose-700/80 mt-0.5">已安全緩存前 68% (1.63 MB) 加密分塊，無須從頭上傳。</div>
+            </div>
+            <span class="text-xs font-mono font-semibold text-rose-700 tabular-nums">68% 保留</span>
+          </div>
+          <div class="w-full h-1.5 bg-rose-200/70 rounded-full overflow-hidden my-2">
+            <div class="h-full bg-rose-600 w-[68%] rounded-full"></div>
+          </div>
+          <div class="flex items-center justify-end gap-2">
+            <button onclick="setState('idle')" class="px-2.5 py-1 text-xs font-medium text-slate-500 hover:text-slate-800 rounded-lg transition">放棄</button>
+            <button onclick="setState('verifying')" class="px-3 py-1 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition">從 68% 斷點續傳 ↻</button>
+          </div>
+        `;
+      } else if (currentState === 'success') {
+        chip.textContent = 'STATE: SUCCESS';
+        chip.className = 'px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-emerald-500/15 text-emerald-700';
+        env.className = `${heightClass} flex flex-col justify-between rounded-xl bg-emerald-50/40 ring-1 ring-inset ring-emerald-500/25 p-4 transition-all duration-300`;
+        env.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">✓</span>
+              <div>
+                <div class="text-xs font-semibold text-slate-900">憑證已部署至全球 38 個邊緣節點</div>
+                <div class="text-xs text-slate-500">到期日：2027-11-11 · 自動續期已啟動</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-white ring-1 ring-slate-900/5 font-mono text-xs text-slate-600">
+            <span class="truncate">SHA256: 9f86d081884c7d659a2feaa0c55ad015a3</span>
+            <span class="text-indigo-600 font-sans font-medium cursor-pointer ml-2 shrink-0">複製</span>
+          </div>
+          <div class="flex items-center justify-end">
+            <button onclick="setState('idle')" class="text-xs font-medium text-slate-500 hover:text-slate-900 transition">匯入另一組憑證 →</button>
+          </div>
+        `;
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 5（Lv.5 最終章）：暗黑模式光學階層、同心圓角與鍵盤流工藝</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-800">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-cyan-500/20 text-cyan-300">最終章 Lv.5</span>
+        <h1 class="text-base font-semibold text-white">暗色光學階層、同心圓角公式與 Command-K 鍵盤流</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          AI 假暗黑模式 (0/5)
+        </button>
+        <button onclick="applyPreset('craft')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          Raycast / Linear 暗色工藝 (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      <!-- Left: Dark Mode Live Stage -->
+      <div id="dark-stage" class="md:col-span-7 bg-black rounded-xl p-6 flex flex-col items-center justify-center min-h-[390px] transition-colors duration-300">
+        <div id="base-layer" class="w-full max-w-md bg-black border-2 border-gray-500 rounded-3xl p-4 transition-all duration-300">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <span id="layer-label" class="text-xs font-bold text-white">底層工作區 (Elevation L1)</span>
+            <span id="radius-formula" class="text-xs font-mono text-rose-400">圓角畸變：外 24px / 內 24px</span>
+          </div>
+
+          <div id="elevated-card" class="w-full bg-black border-2 border-gray-400 rounded-3xl p-3 transition-all duration-300">
+            <div id="search-box" class="flex items-center justify-between bg-gray-900 border-2 border-blue-600 rounded-3xl px-3 py-2 mb-3 transition-all duration-300">
+              <div class="flex items-center gap-2">
+                <span id="search-icon" class="text-xs text-blue-500 font-bold">🔍</span>
+                <span id="search-text" class="text-xs font-bold text-white">部署至生產環境叢集...</span>
+              </div>
+              <span id="esc-kbd" class="px-1.5 py-0.5 text-xs font-bold bg-gray-700 text-white border border-white rounded">ESC</span>
+            </div>
+
+            <div class="flex flex-col gap-1.5" id="cmd-list">
+              <div onclick="selectRow(0)" id="cmd-0" class="cursor-pointer flex items-center justify-between p-2.5 rounded-3xl border border-gray-600 bg-blue-900 transition-all duration-200">
+                <div class="flex items-center gap-2.5">
+                  <span id="badge-0" class="px-1.5 py-0.5 text-xs font-bold rounded bg-blue-700 text-blue-200">PROD</span>
+                  <div>
+                    <div id="title-0" class="text-xs font-bold text-white">切換流量至 Tokyo (ap-northeast-1)</div>
+                    <div id="desc-0" class="text-xs font-bold text-blue-500">零停機藍綠切換 · 延遲 18ms</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <kbd id="kbd-0a" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">⌘</kbd>
+                  <kbd id="kbd-0b" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">↵</kbd>
+                </div>
+              </div>
+
+              <div onclick="selectRow(1)" id="cmd-1" class="cursor-pointer flex items-center justify-between p-2.5 rounded-3xl border border-gray-700 bg-black transition-all duration-200">
+                <div class="flex items-center gap-2.5">
+                  <span id="badge-1" class="px-1.5 py-0.5 text-xs font-bold rounded bg-green-700 text-green-200">SAFE</span>
+                  <div>
+                    <div id="title-1" class="text-xs font-bold text-white">建立資料庫唯讀快照 (Snapshot)</div>
+                    <div id="desc-1" class="text-xs font-bold text-green-600">預計耗時 4 秒 · 不影響寫入</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <kbd id="kbd-1a" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">⌘</kbd>
+                  <kbd id="kbd-1b" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">S</kbd>
+                </div>
+              </div>
+
+              <div onclick="selectRow(2)" id="cmd-2" class="cursor-pointer flex items-center justify-between p-2.5 rounded-3xl border border-gray-700 bg-black transition-all duration-200">
+                <div class="flex items-center gap-2.5">
+                  <span id="badge-2" class="px-1.5 py-0.5 text-xs font-bold rounded bg-red-700 text-red-200">WARN</span>
+                  <div>
+                    <div id="title-2" class="text-xs font-bold text-white">清除全域 CDN 快取 (Purge All)</div>
+                    <div id="desc-2" class="text-xs font-bold text-red-600">回源流量將短暫上升 35%</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <kbd id="kbd-2a" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">⌘</kbd>
+                  <kbd id="kbd-2b" class="px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400">⌫</kbd>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: 5 Master Dark Mode & Optical Switches -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          為什麼 AI 寫的暗黑模式看起來像「90 年代高對比終端機」？點擊開啟 5 大光學定律：
+        </div>
+
+        <button onclick="toggleRule('luminance')" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-800/40 flex items-start justify-between gap-2 hover:bg-slate-800 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 海拔亮度階梯 (Elevation = Luminance)</div>
+            <div class="text-xs text-slate-400 mt-0.5">廢除全黑底配灰線，改用 zinc-950 → zinc-900 → zinc-800 亮度推進</div>
+          </div>
+          <span id="status-luminance" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('specular')" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-800/40 flex items-start justify-between gap-2 hover:bg-slate-800 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 頂部鏡面微高光 (Top Specular Hairline)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除四周鐵絲網粗框，改用頂部 1px 內高光模擬物理頂光</div>
+          </div>
+          <span id="status-specular" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('concentric')" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-800/40 flex items-start justify-between gap-2 hover:bg-slate-800 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 同心圓角幾何公式 (R_in = R_out - Padding)</div>
+            <div class="text-xs text-slate-400 mt-0.5">修正內外皆 rounded-3xl 的轉角畸變，達成外 16px / 內 8px 平行弧線</div>
+          </div>
+          <span id="status-concentric" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('halation')" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-800/40 flex items-start justify-between gap-2 hover:bg-slate-800 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 防眩光與暗色提亮降彩 (Anti-Halation)</div>
+            <div class="text-xs text-slate-400 mt-0.5">將刺眼純白與糊成一團的深藍字，改為 zinc-100 與高明度粉彩語意色</div>
+          </div>
+          <span id="status-halation" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('kbd')" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-800/40 flex items-start justify-between gap-2 hover:bg-slate-800 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 鍵盤流焦點與立體鍵帽 (Kbd Affordance)</div>
+            <div class="text-xs text-slate-400 mt-0.5">點擊左側任一列測試：以微透明光帶與立體鍵帽取代生硬藍底</div>
+          </div>
+          <span id="status-kbd" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      luminance: false,
+      specular: false,
+      concentric: false,
+      halation: false,
+      kbd: false
+    };
+    let selectedIdx = 0;
+
+    function selectRow(idx) {
+      selectedIdx = idx;
+      render();
+    }
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'craft';
+      Object.keys(state).forEach(k => state[k] = val);
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '光學工藝';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      const stage = document.getElementById('dark-stage');
+      const baseLayer = document.getElementById('base-layer');
+      const elevatedCard = document.getElementById('elevated-card');
+      const searchBox = document.getElementById('search-box');
+      const layerLabel = document.getElementById('layer-label');
+      const radiusFormula = document.getElementById('radius-formula');
+      const searchIcon = document.getElementById('search-icon');
+      const searchText = document.getElementById('search-text');
+      const escKbd = document.getElementById('esc-kbd');
+
+      stage.className = [
+        'md:col-span-7 rounded-xl p-6 flex flex-col items-center justify-center min-h-[390px] transition-colors duration-300',
+        state.luminance ? 'bg-zinc-950' : 'bg-black'
+      ].join(' ');
+
+      const outerRadius = state.concentric ? 'rounded-2xl' : 'rounded-3xl';
+      const midRadius = state.concentric ? 'rounded-xl' : 'rounded-3xl';
+      const innerRadius = state.concentric ? 'rounded-lg' : 'rounded-3xl';
+
+      radiusFormula.textContent = state.concentric
+        ? '同心圓角：外 16px - 距 8px = 內 8px'
+        : '圓角畸變：外 24px / 內 24px';
+      radiusFormula.className = state.concentric
+        ? 'text-xs font-mono text-emerald-400'
+        : 'text-xs font-mono text-rose-400';
+
+      baseLayer.className = [
+        'w-full max-w-md p-3.5 transition-all duration-300',
+        outerRadius,
+        state.luminance ? 'bg-zinc-900/90' : 'bg-black',
+        state.specular
+          ? 'ring-1 ring-white/[0.07] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_20px_40px_-15px_rgba(0,0,0,0.7)]'
+          : 'border-2 border-gray-500'
+      ].join(' ');
+
+      elevatedCard.className = [
+        'w-full p-2 transition-all duration-300',
+        midRadius,
+        state.luminance ? 'bg-zinc-800/80 backdrop-blur-md' : 'bg-black',
+        state.specular
+          ? 'ring-1 ring-white/[0.09] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_24px_-6px_rgba(0,0,0,0.6)]'
+          : 'border-2 border-gray-400'
+      ].join(' ');
+
+      searchBox.className = [
+        'flex items-center justify-between px-3 py-2 mb-2 transition-all duration-300',
+        innerRadius,
+        state.luminance ? 'bg-zinc-900/90' : 'bg-gray-900',
+        state.specular ? 'ring-1 ring-white/[0.07]' : 'border-2 border-blue-600'
+      ].join(' ');
+
+      layerLabel.className = state.halation ? 'text-xs font-medium text-zinc-400' : 'text-xs font-bold text-white';
+      searchIcon.className = state.halation ? 'text-xs text-zinc-400' : 'text-xs text-blue-500 font-bold';
+      searchIcon.textContent = state.halation ? '⌘' : '🔍';
+      searchText.className = state.halation ? 'text-xs font-normal text-zinc-200' : 'text-xs font-bold text-white';
+
+      escKbd.className = state.kbd
+        ? 'px-1.5 py-0.5 text-xs font-mono text-zinc-400 bg-zinc-800 rounded ring-1 ring-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.12)]'
+        : 'px-1.5 py-0.5 text-xs font-bold bg-gray-700 text-white border border-white rounded';
+
+      const itemsMeta = [
+        {
+          slopBadge: 'px-1.5 py-0.5 text-xs font-bold rounded bg-blue-700 text-blue-200',
+          craftBadge: 'w-12 text-center py-0.5 text-xs font-mono font-medium rounded bg-indigo-400/15 text-indigo-300 ring-1 ring-inset ring-indigo-400/25',
+          slopDesc: 'text-xs font-bold text-blue-500',
+          craftDesc: 'text-xs font-normal text-zinc-400'
+        },
+        {
+          slopBadge: 'px-1.5 py-0.5 text-xs font-bold rounded bg-green-700 text-green-200',
+          craftBadge: 'w-12 text-center py-0.5 text-xs font-mono font-medium rounded bg-emerald-400/15 text-emerald-300 ring-1 ring-inset ring-emerald-400/25',
+          slopDesc: 'text-xs font-bold text-green-600',
+          craftDesc: 'text-xs font-normal text-zinc-400'
+        },
+        {
+          slopBadge: 'px-1.5 py-0.5 text-xs font-bold rounded bg-red-700 text-red-200',
+          craftBadge: 'w-12 text-center py-0.5 text-xs font-mono font-medium rounded bg-amber-400/15 text-amber-300 ring-1 ring-inset ring-amber-400/25',
+          slopDesc: 'text-xs font-bold text-red-600',
+          craftDesc: 'text-xs font-normal text-zinc-400'
+        }
+      ];
+
+      itemsMeta.forEach((meta, idx) => {
+        const row = document.getElementById('cmd-' + idx);
+        const badge = document.getElementById('badge-' + idx);
+        const title = document.getElementById('title-' + idx);
+        const desc = document.getElementById('desc-' + idx);
+        const kbdA = document.getElementById('kbd-' + idx + 'a');
+        const kbdB = document.getElementById('kbd-' + idx + 'b');
+        const isSelected = idx === selectedIdx;
+
+        badge.className = state.halation ? meta.craftBadge : meta.slopBadge;
+        title.className = state.halation
+          ? (isSelected ? 'text-xs font-medium text-zinc-100' : 'text-xs font-normal text-zinc-300')
+          : 'text-xs font-bold text-white';
+        desc.className = state.halation ? meta.craftDesc : meta.slopDesc;
+
+        const kbdClass = state.kbd
+          ? 'px-1.5 py-0.5 text-xs font-mono text-zinc-300 bg-zinc-900/90 rounded ring-1 ring-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.15)]'
+          : 'px-1.5 py-0.5 text-xs font-mono bg-gray-800 text-white border border-gray-400';
+        kbdA.className = kbdClass;
+        kbdB.className = kbdClass;
+
+        let rowClasses = ['cursor-pointer flex items-center justify-between p-2.5 transition-all duration-150', innerRadius];
+        if (state.kbd && state.specular) {
+          if (isSelected) {
+            rowClasses.push('bg-white/[0.08] ring-1 ring-white/[0.08] shadow-[inset_2px_0_0_0_#818cf8]');
+          } else {
+            rowClasses.push('bg-transparent hover:bg-white/[0.04]');
+          }
+        } else {
+          if (isSelected) {
+            rowClasses.push('bg-blue-900', state.specular ? 'ring-1 ring-white/10' : 'border border-gray-500');
+          } else {
+            rowClasses.push(state.luminance ? 'bg-transparent' : 'bg-black', state.specular ? '' : 'border border-gray-700');
+          }
+        }
+        row.className = rowClasses.join(' ');
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>

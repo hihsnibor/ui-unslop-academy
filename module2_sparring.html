@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 2：設計 Linter 與品味校準（真實頁面實戰）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Control Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-slate-700">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-indigo-500/20 text-indigo-300">模組 2：真實頁面審閱</span>
+        <h1 class="text-base font-semibold text-white">SaaS 團隊帳單卡片 — 互動式設計 Linter 工作台</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          原始待審版 (0/5)
+        </button>
+        <button onclick="applyPreset('unslop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          一鍵 Unslop (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      <!-- Real Page Preview Stage -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-8 flex items-center justify-center min-h-[380px]">
+        <div id="preview-card" class="w-full max-w-md bg-white border-2 border-black rounded-md p-2 shadow-xl transition-all duration-300">
+          <div id="card-header" class="flex items-center justify-between border-b-2 border-black pb-1 mb-2">
+            <div>
+              <span id="badge-plan" class="inline-block text-xs font-bold bg-blue-600 text-white px-1.5 py-0.5 rounded-none mb-1">PRO PLAN</span>
+              <h3 id="title-main" class="text-xl font-bold text-black">團隊工作區訂閱方案</h3>
+              <p id="title-sub" class="text-base font-bold text-black">下次扣款日：2026 年 12 月 1 日</p>
+            </div>
+            <div class="text-right">
+              <div id="price-text" class="text-2xl font-bold text-black">$49</div>
+              <div id="price-unit" class="text-sm font-bold text-black">每月 / 5 人</div>
+            </div>
+          </div>
+
+          <div id="usage-box" class="border-2 border-black p-2 mb-2 bg-white">
+            <div class="flex justify-between text-xs mb-1">
+              <span id="usage-label" class="font-bold text-black">雲端儲存空間已使用</span>
+              <span id="usage-val" class="font-bold text-black">82 GB / 100 GB (82%)</span>
+            </div>
+            <div class="w-full h-3 bg-gray-300 rounded-none overflow-hidden">
+              <div id="usage-bar" class="h-full bg-blue-600 w-[82%] transition-all duration-500"></div>
+            </div>
+          </div>
+
+          <div id="action-row" class="flex items-center justify-end gap-1 pt-1">
+            <button id="btn-secondary" class="px-2 py-1 text-xs font-bold text-black border border-black bg-gray-200">
+              下載收據
+            </button>
+            <button id="btn-primary" class="px-2 py-1 text-xs font-bold text-white bg-blue-700 border border-black">
+              升級容量方案
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Design Linter Checklist -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-1">
+          點擊切換 5 大設計 Linter 規則（即時渲染於左側頁面）：
+        </div>
+
+        <button onclick="toggleRule('whitespace')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 極致留白 (Aggressive Whitespace)</div>
+            <div class="text-xs text-slate-400 mt-0.5">p-2 擁擠容器 → p-7 呼吸感與區塊層次間距</div>
+          </div>
+          <span id="status-whitespace" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('shadow')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 柔和陰影 (Soft Shadows)</div>
+            <div class="text-xs text-slate-400 mt-0.5">生硬 shadow-xl → 擴散柔光 0_8px_30px_rgb(0,0,0,0.06)</div>
+          </div>
+          <span id="status-shadow" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('restraint')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 色彩與邊框克制 (Border Restraint)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除純黑粗框，改用 bg-slate-50 區分用量區塊</div>
+          </div>
+          <span id="status-restraint" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('typography')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 字體層次 (Typography Hierarchy)</div>
+            <div class="text-xs text-slate-400 mt-0.5">告別全黑粗體，建立 slate-900 與 slate-500 對比</div>
+          </div>
+          <span id="status-typography" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('motion')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 精緻微動效 (Micro-interactions)</div>
+            <div class="text-xs text-slate-400 mt-0.5">加入圓角與 hover:-translate-y-0.5 平滑上浮回饋</div>
+          </div>
+          <span id="status-motion" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      whitespace: false,
+      shadow: false,
+      restraint: false,
+      typography: false,
+      motion: false
+    };
+
+    function toggleRule(key) {
+      state[key] = !state[key];
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'unslop';
+      Object.keys(state).forEach(k => state[k] = val);
+      render();
+    }
+
+    function render() {
+      const card = document.getElementById('preview-card');
+      const header = document.getElementById('card-header');
+      const badge = document.getElementById('badge-plan');
+      const titleMain = document.getElementById('title-main');
+      const titleSub = document.getElementById('title-sub');
+      const priceText = document.getElementById('price-text');
+      const priceUnit = document.getElementById('price-unit');
+      const usageBox = document.getElementById('usage-box');
+      const usageLabel = document.getElementById('usage-label');
+      const usageVal = document.getElementById('usage-val');
+      const actionRow = document.getElementById('action-row');
+      const btnSec = document.getElementById('btn-secondary');
+      const btnPri = document.getElementById('btn-primary');
+
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '已優化';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      let cardClasses = ['w-full', 'max-w-md', 'bg-white', 'transition-all', 'duration-300', 'ease-out'];
+      cardClasses.push(state.whitespace ? 'p-7' : 'p-2');
+      cardClasses.push(state.shadow ? 'shadow-[0_8px_30px_rgb(0,0,0,0.06)]' : 'shadow-xl');
+      cardClasses.push(state.restraint ? 'border border-slate-100' : 'border-2 border-black');
+      cardClasses.push(state.motion ? 'rounded-2xl hover:-translate-y-1 hover:shadow-[0_16px_40px_rgb(0,0,0,0.08)]' : 'rounded-md');
+      card.className = cardClasses.join(' ');
+
+      header.className = [
+        'flex items-start justify-between',
+        state.whitespace ? 'pb-5 mb-5' : 'pb-1 mb-2',
+        state.restraint ? 'border-b border-slate-100' : 'border-b-2 border-black'
+      ].join(' ');
+
+      badge.className = [
+        'inline-block text-xs font-semibold px-2.5 py-0.5 mb-2',
+        state.restraint ? 'bg-indigo-50 text-indigo-600' : 'bg-blue-600 text-white',
+        state.motion ? 'rounded-full' : 'rounded-none'
+      ].join(' ');
+
+      titleMain.className = state.typography
+        ? 'text-lg font-semibold text-slate-900 tracking-tight'
+        : 'text-xl font-bold text-black';
+      titleSub.className = state.typography
+        ? 'text-xs font-normal text-slate-500 mt-1'
+        : 'text-base font-bold text-black';
+      priceText.className = state.typography
+        ? 'text-2xl font-semibold text-slate-900 tracking-tight'
+        : 'text-2xl font-bold text-black';
+      priceUnit.className = state.typography
+        ? 'text-xs font-normal text-slate-400 mt-0.5'
+        : 'text-sm font-bold text-black';
+
+      usageBox.className = [
+        state.whitespace ? 'p-4 mb-6' : 'p-2 mb-2',
+        state.restraint ? 'bg-slate-50 border-0' : 'bg-white border-2 border-black',
+        state.motion ? 'rounded-xl' : 'rounded-none'
+      ].join(' ');
+
+      usageLabel.className = state.typography ? 'font-medium text-slate-600' : 'font-bold text-black';
+      usageVal.className = state.typography ? 'font-semibold text-slate-800' : 'font-bold text-black';
+
+      actionRow.className = [
+        'flex items-center justify-end',
+        state.whitespace ? 'gap-3 pt-1' : 'gap-1 pt-1'
+      ].join(' ');
+
+      btnSec.className = [
+        state.whitespace ? 'px-4 py-2 text-xs' : 'px-2 py-1 text-xs',
+        state.typography ? 'font-medium text-slate-600' : 'font-bold text-black',
+        state.restraint ? 'bg-slate-100/80 border-0 hover:bg-slate-200/70' : 'bg-gray-200 border border-black',
+        state.motion ? 'rounded-xl transition-all duration-200 active:scale-95' : 'rounded-none'
+      ].join(' ');
+
+      btnPri.className = [
+        state.whitespace ? 'px-4 py-2 text-xs' : 'px-2 py-1 text-xs',
+        state.typography ? 'font-medium text-white' : 'font-bold text-white',
+        state.restraint ? 'bg-slate-900 border-0 hover:bg-slate-800' : 'bg-blue-700 border border-black',
+        state.motion ? 'rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:scale-95' : 'rounded-none'
+      ].join(' ');
+    }
+  </script>
+</body>
+</html>
