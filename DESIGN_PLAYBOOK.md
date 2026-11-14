@@ -75,3 +75,14 @@
   3. **內嵌微型趨勢線取代假圖示 (Inline Sparklines vs. Decorative Emoji)**：移除毫無資訊量的 🚀/💰 大圖示，改放真實 SVG 微型走勢線（Sparkline）或 12 格可用性健康度條。
   4. **藍圖預演式空狀態 (Blueprint / Ghost Skeleton Empty State)**：禁止只寫死寂的 `No Data Found`；背景應渲染半透明虛線示意骨架（預告有資料時的結構），並附上「+ 載入範例規則」一鍵啟動 CTA。
   5. **漸進式邊界消融 (Bottom Mask Fade-Out)**：Bento 卡片內的動態列表或圖表，底部應加上漸層遮罩 `bg-gradient-to-t from-white via-white/85 to-transparent`，消除生硬切邊感。
+
+---
+
+## 課程 8：高轉換表單人體工學與破壞性操作防呆 (Lv.8 Form Ergonomics & Friction-Matched Destructive UX)
+- **檔案範例**：[course8.html](file:///Users/robin/Documents/antigravity/Learn/course8.html)
+- **5 大表單與危險操作法則**：
+  1. **少於 5 個選項禁用下拉選單 (Segmented Radio Cards vs. Tiny Select)**：當選項只有 2~4 個（如方案規格、部署區域）時，禁止藏在需要點擊兩次的 `<select>` 裡；改為一眼能比對價格與規格的橫向選擇卡。
+  2. **垂直視線流與前綴內嵌 (Single-Column Rhythm & Prefix Inlining)**：廢除讓眼球呈 Z 字形跳躍的雙欄短輸入框；並將固定網域或協定前綴（如 `db.ap-east.` 或 `https://`）直接內嵌於輸入框左側。
+  3. **標註選填而非滿屏紅星 (Mark Optional, Not Required)**：當表單 80% 欄位都是必填時，移除刺眼的紅色 `*`，改為只在少數選填欄位旁標註溫和的 `(選填)`。
+  4. **金鑰遮罩與原位複製變形 (Masked Secret & In-Place Copy Morph)**：敏感 Token 預設僅露出首尾 4 碼，點擊複製時按鈕在原位定寬切換為 `✓ 已複製`（1.4 秒後復原），禁止彈出阻斷視線的 `alert()`。
+  5. **阻力匹配：長按充能銷毀 (Hold-to-Delete Charge Bar)**：使用者對傳統 `确定要刪除嗎？` 彈窗已產生肌肉記憶誤按；高風險不可逆操作可採用「長按 1 秒充能條 (`Hold-to-Confirm`)」，提供物理級防呆且零視窗跳轉。

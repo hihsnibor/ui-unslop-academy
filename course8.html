@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 8（Lv.8）：高轉換表單人體工學與破壞性操作防呆</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-orange-500/20 text-orange-300">表單與防呆 Lv.8</span>
+        <h1 class="text-base font-semibold text-white">表單人體工學、消滅少選項下拉選單與「長按銷毀」防呆工藝</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          AI 傳統表單 (0/5)
+        </button>
+        <button onclick="applyPreset('craft')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          Stripe / Vercel 表單工藝 (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <!-- Left: Real Page Form & Danger Zone Stage -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-5 flex flex-col justify-center min-h-[395px] text-slate-900">
+        <div id="form-card" class="w-full max-w-md mx-auto bg-white rounded-xl p-4 border-2 border-gray-400 shadow-md transition-all duration-300">
+          <div class="mb-3 pb-2.5 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-900">建立生產環境資料庫叢集</h3>
+              <p class="text-xs text-slate-400">設定區域、運算規格與金鑰存取權限</p>
+            </div>
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-slate-100 text-slate-600">postgres-16</span>
+          </div>
+          <div id="form-body" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- Right: 5 Form & Destructive UX Switches -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          為什麼 AI 寫的設定頁總讓人「填得很累又容易誤刪」？點擊右側 5 大表單法則：
+        </div>
+
+        <button onclick="toggleRule('segmented')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 少於 5 個選項禁用下拉選單 (No Tiny Select)</div>
+            <div class="text-xs text-slate-400 mt-0.5">將需點擊兩次的 &lt;select&gt; 改為一眼可見的規格選擇卡 (Radio Cards)</div>
+          </div>
+          <span id="status-segmented" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('singlecol')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 垂直視線流與前綴內嵌 (Prefix Inlining)</div>
+            <div class="text-xs text-slate-400 mt-0.5">消除 Z 字形雙欄跳躍，並在輸入框內嵌固定網域前綴減少輸入負擔</div>
+          </div>
+          <span id="status-singlecol" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('optional')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 消滅滿屏紅星號 (Mark Optional, Not Required)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除刺眼的紅色 * 號，改為僅在少數選填欄位標註溫和的「選填」</div>
+          </div>
+          <span id="status-optional" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('copykey')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 金鑰遮罩與原位複製回饋 (In-Place Copy Morph)</div>
+            <div class="text-xs text-slate-400 mt-0.5">避免裸露整串密碼，點擊複製時原位切換為綠色「✓ 已複製」不彈窗</div>
+          </div>
+          <span id="status-copykey" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('holddelete')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 阻力匹配：長按充能銷毀 (Hold-to-Delete)</div>
+            <div class="text-xs text-slate-400 mt-0.5">取代會被習慣性秒按確定的 window.confirm，改用「按住 1 秒充能」防誤刪</div>
+          </div>
+          <span id="status-holddelete" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      segmented: false,
+      singlecol: false,
+      optional: false,
+      copykey: false,
+      holddelete: false
+    };
+
+    let selectedTier = 'pro';
+    let copied = false;
+    let deleted = false;
+    let holdTimer = null;
+
+    function selectTier(t) {
+      selectedTier = t;
+      render();
+    }
+
+    function triggerCopy() {
+      if (!state.copykey) {
+        alert('Copied to clipboard! (傳統惱人彈窗)');
+        return;
+      }
+      copied = true;
+      render();
+      setTimeout(() => {
+        copied = false;
+        render();
+      }, 1400);
+    }
+
+    function startHold() {
+      if (!state.holddelete) {
+        deleted = true;
+        render();
+        return;
+      }
+      if (deleted) {
+        deleted = false;
+        render();
+        return;
+      }
+      const bar = document.getElementById('hold-bar');
+      if (bar) bar.style.width = '100%';
+      holdTimer = setTimeout(() => {
+        deleted = true;
+        render();
+      }, 1000);
+    }
+
+    function endHold() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      const bar = document.getElementById('hold-bar');
+      if (bar && !deleted) bar.style.width = '0%';
+    }
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      deleted = false;
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'craft';
+      Object.keys(state).forEach(k => state[k] = val);
+      deleted = false;
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '已優化';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      const card = document.getElementById('form-card');
+      const body = document.getElementById('form-body');
+
+      card.className = state.singlecol
+        ? 'w-full max-w-md mx-auto bg-white rounded-2xl p-5 ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_28px_-4px_rgba(15,23,42,0.06)] transition-all duration-300'
+        : 'w-full max-w-md mx-auto bg-white rounded-xl p-4 border-2 border-gray-400 shadow-md transition-all duration-300';
+
+      const reqStar = state.optional ? '' : '<span class="text-red-600 font-bold ml-0.5">*</span>';
+      const optTag = state.optional ? '<span class="text-xs font-normal text-slate-400 ml-1">(選填)</span>' : '';
+
+      let inputsHTML = '';
+      if (state.singlecol) {
+        inputsHTML = `
+          <div class="space-y-2.5">
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">叢集連線端點名稱 ${reqStar}</label>
+              <div class="flex items-center rounded-lg bg-slate-50 ring-1 ring-inset ring-slate-200 focus-within:ring-2 focus-within:ring-slate-900 focus-within:bg-white overflow-hidden transition">
+                <span class="pl-3 pr-1.5 py-1.5 text-xs font-mono text-slate-400 select-none bg-slate-100/80 border-r border-slate-200/80">db.ap-east.</span>
+                <input type="text" value="prod-core-01" class="w-full px-2.5 py-1.5 text-xs font-mono text-slate-900 bg-transparent focus:outline-none" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">備註標籤 ${optTag}</label>
+              <input type="text" placeholder="例如：帳務核心資料庫" class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-50 ring-1 ring-inset ring-slate-200 focus:bg-white focus:outline-none" />
+            </div>
+          </div>
+        `;
+      } else {
+        inputsHTML = `
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold text-black mb-1">叢集名稱 ${reqStar}</label>
+              <input type="text" value="db.ap-east.prod-core-01" class="w-full px-2 py-1 text-xs border-2 border-gray-400 rounded" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-black mb-1">備註標籤 (非必填)</label>
+              <input type="text" placeholder="請輸入備註" class="w-full px-2 py-1 text-xs border-2 border-gray-400 rounded" />
+            </div>
+          </div>
+        `;
+      }
+
+      let tierHTML = '';
+      if (state.segmented) {
+        const tiers = [
+          { id: 'starter', name: 'Starter', spec: '2 vCPU · 4GB', price: '$19/m' },
+          { id: 'pro', name: 'Pro HA', spec: '4 vCPU · 16GB', price: '$69/m' },
+          { id: 'enterprise', name: 'Dedicated', spec: '16 vCPU · 64GB', price: '$249/m' }
+        ];
+        tierHTML = `
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1.5">運算節點規格 ${reqStar}</label>
+            <div class="grid grid-cols-3 gap-2">
+              ${tiers.map(t => {
+                const active = selectedTier === t.id;
+                return `
+                  <div onclick="selectTier('${t.id}')" class="cursor-pointer rounded-xl p-2.5 text-left transition-all ${
+                    active
+                      ? 'bg-slate-900 text-white ring-2 ring-slate-900 shadow-sm'
+                      : 'bg-slate-50/90 text-slate-700 ring-1 ring-inset ring-slate-200/80 hover:bg-slate-100'
+                  }">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-semibold">${t.name}</span>
+                      <span class="text-xs font-mono ${active ? 'text-emerald-300' : 'text-slate-500'}">${t.price}</span>
+                    </div>
+                    <div class="text-xs ${active ? 'text-slate-300' : 'text-slate-400'} mt-0.5 font-mono">${t.spec}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        tierHTML = `
+          <div>
+            <label class="block text-xs font-bold text-black mb-1">選擇規格 ${reqStar}</label>
+            <select class="w-full px-2 py-1.5 text-xs font-bold border-2 border-gray-400 rounded bg-gray-100">
+              <option>Pro HA (4 vCPU / 16GB) - $69/m</option>
+              <option>Starter (2 vCPU / 4GB) - $19/m</option>
+              <option>Dedicated (16 vCPU / 64GB) - $249/m</option>
+            </select>
+          </div>
+        `;
+      }
+
+      let keyHTML = '';
+      if (state.copykey) {
+        keyHTML = `
+          <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 ring-1 ring-inset ring-slate-200/80">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-slate-500">Root 連線金鑰</span>
+              <span class="text-xs font-mono text-slate-800">pg_live_••••••••••••9f4a</span>
+            </div>
+            <button onclick="triggerCopy()" class="w-20 py-1 text-xs font-medium rounded-lg transition-all ${
+              copied ? 'bg-emerald-500/15 text-emerald-700' : 'bg-white text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100'
+            }">
+              ${copied ? '✓ 已複製' : '複製金鑰'}
+            </button>
+          </div>
+        `;
+      } else {
+        keyHTML = `
+          <div class="flex items-center justify-between p-2 border-2 border-gray-300 rounded bg-yellow-50">
+            <span class="text-xs font-mono font-bold text-black truncate">pg_live_84920194829104929f4a</span>
+            <button onclick="triggerCopy()" class="px-2 py-0.5 text-xs font-bold bg-blue-600 text-white rounded shrink-0">點此複製</button>
+          </div>
+        `;
+      }
+
+      let dangerHTML = '';
+      if (deleted) {
+        dangerHTML = `
+          <div class="p-3 rounded-xl bg-slate-900 text-white flex items-center justify-between">
+            <span class="text-xs">✓ 叢集已安全排入銷毀佇列</span>
+            <button onclick="deleted=false; render();" class="text-xs text-emerald-300 underline">復原測試</button>
+          </div>
+        `;
+      } else if (state.holddelete) {
+        dangerHTML = `
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-medium text-slate-700">銷毀生產叢集 (不可逆)</div>
+              <div class="text-xs text-slate-400">長按右側按鈕 1 秒以防止誤觸</div>
+            </div>
+            <button
+              onmousedown="startHold()"
+              onmouseup="endHold()"
+              onmouseleave="endHold()"
+              ontouchstart="startHold()"
+              ontouchend="endHold()"
+              class="relative overflow-hidden px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20 text-xs font-medium select-none active:scale-95 transition"
+            >
+              <span id="hold-bar" class="absolute inset-y-0 left-0 w-0 bg-rose-600/20 transition-all duration-1000 ease-linear"></span>
+              <span class="relative z-10">長按 1 秒銷毀</span>
+            </button>
+          </div>
+        `;
+      } else {
+        dangerHTML = `
+          <div class="pt-2 border-t-2 border-red-400 flex items-center justify-between">
+            <span class="text-xs font-bold text-red-600">危險區域：立即刪除資料庫</span>
+            <button onclick="startHold()" class="px-3 py-1 text-xs font-bold bg-red-600 text-white rounded">直接刪除！</button>
+          </div>
+        `;
+      }
+
+      body.innerHTML = inputsHTML + tierHTML + keyHTML + dangerHTML;
+    }
+
+    render();
+  </script>
+</body>
+</html>
