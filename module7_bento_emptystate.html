@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 7（Lv.7）：Bento Grid 不對稱視覺權重與藍圖式空狀態</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-rose-500/20 text-rose-300">版面編排 Lv.7</span>
+        <h1 class="text-base font-semibold text-white">Bento Grid 不對稱視覺權重、微型趨勢線與藍圖式空狀態</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="applyPreset('slop')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition">
+          AI 均分豆腐格 (0/5)
+        </button>
+        <button onclick="applyPreset('craft')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition">
+          Apple / Linear 級 Bento (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <!-- Left: Real Page Bento Stage -->
+      <div class="md:col-span-7 bg-slate-100 rounded-xl p-5 flex flex-col justify-center min-h-[395px] text-slate-900">
+        <div id="bento-grid" class="w-full grid grid-cols-12 gap-3 transition-all duration-300"></div>
+      </div>
+
+      <!-- Right: 5 Bento & Empty State Linter Switches -->
+      <div class="md:col-span-5 flex flex-col gap-2.5">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          為什麼 AI 排的網格像「呆板的四格漫畫」？點擊右側 5 大版面編排法則：
+        </div>
+
+        <button onclick="toggleRule('asymmetry')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 不對稱視覺權重 (Asymmetric Span)</div>
+            <div class="text-xs text-slate-400 mt-0.5">打破 6:6 均分豆腐格，改用 7:5 主從跨欄建立第一視覺焦點</div>
+          </div>
+          <span id="status-asymmetry" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('anchor')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 編輯式左上錨定 (Editorial Top-Left Anchor)</div>
+            <div class="text-xs text-slate-400 mt-0.5">廢除簡報式全置中文字，改為左上標題錨定 + 底部數據沉澱</div>
+          </div>
+          <span id="status-anchor" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('sparkline')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 內嵌微型趨勢線取代假圖示 (Inline Sparkline)</div>
+            <div class="text-xs text-slate-400 mt-0.5">移除毫無資訊量的 🚀/💰 大圖示，改放真實 SVG 走勢曲線</div>
+          </div>
+          <span id="status-sparkline" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('emptystate')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 藍圖預演式空狀態 (Blueprint Empty State)</div>
+            <div class="text-xs text-slate-400 mt-0.5">將死寂的「尚無資料」改為半透明預演骨架 + 一鍵載入範例鈕</div>
+          </div>
+          <span id="status-emptystate" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('fade')" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-800/50 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 漸進式邊界消融 (Bottom Mask Fade-Out)</div>
+            <div class="text-xs text-slate-400 mt-0.5">以底部漸層遮罩讓內嵌預覽自然融入卡片基底，消除生硬切邊</div>
+          </div>
+          <span id="status-fade" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      asymmetry: false,
+      anchor: false,
+      sparkline: false,
+      emptystate: false,
+      fade: false
+    };
+
+    let sampleLoaded = false;
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      if (k === 'emptystate') sampleLoaded = false;
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'craft';
+      Object.keys(state).forEach(k => state[k] = val);
+      sampleLoaded = false;
+      render();
+    }
+
+    function loadSampleData() {
+      sampleLoaded = true;
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '已優化';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-300 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-300 shrink-0';
+        }
+      });
+
+      const grid = document.getElementById('bento-grid');
+
+      const spanA = state.asymmetry ? 'col-span-12 sm:col-span-7' : 'col-span-6';
+      const spanB = state.asymmetry ? 'col-span-12 sm:col-span-5' : 'col-span-6';
+      const spanC = state.asymmetry ? 'col-span-12 sm:col-span-5' : 'col-span-6';
+      const spanD = state.asymmetry ? 'col-span-12 sm:col-span-7' : 'col-span-6';
+
+      const cardShell = state.fade
+        ? 'bg-white rounded-2xl p-4 ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_28px_-4px_rgba(15,23,42,0.05)] relative overflow-hidden transition-all duration-300'
+        : 'bg-white rounded-lg p-3 border-2 border-gray-300 shadow-md relative overflow-hidden transition-all duration-300';
+
+      const alignClass = state.anchor
+        ? 'flex flex-col justify-between items-start text-left'
+        : 'flex flex-col justify-center items-center text-center';
+
+      const sparklineSVG = state.sparkline
+        ? `<div class="w-full mt-2 pt-2 border-t border-slate-100 flex items-end justify-between gap-2">
+             <div>
+               <div class="text-xl font-semibold text-slate-900 tabular-nums tracking-tight">$128,490<span class="text-xs font-normal text-emerald-600 ml-1.5">+18.4%</span></div>
+               <div class="text-xs text-slate-400">過去 30 日經常性營收 (MRR)</div>
+             </div>
+             <svg class="w-24 h-10 overflow-visible shrink-0" viewBox="0 0 100 36">
+               <defs>
+                 <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                   <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.22"/>
+                   <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0"/>
+                 </linearGradient>
+               </defs>
+               <path d="M0,30 L18,26 L35,28 L52,16 L70,19 L85,8 L100,4 L100,36 L0,36 Z" fill="url(#sparkGrad)" />
+               <path d="M0,30 L18,26 L35,28 L52,16 L70,19 L85,8 L100,4" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" />
+               <circle cx="100" cy="4" r="3" fill="#4f46e5" />
+             </svg>
+           </div>`
+        : `<div class="my-2 text-3xl">💰</div>
+           <div class="text-lg font-extrabold text-blue-700">$128,490</div>`;
+
+      const card1HTML = `
+        <div class="${spanA} ${cardShell} ${alignClass} min-h-[155px]">
+          <div class="w-full">
+            <span class="text-xs font-medium ${state.anchor ? 'text-slate-400' : 'font-bold text-black'}">核心營收引擎</span>
+            <h3 class="text-sm font-semibold ${state.anchor ? 'text-slate-900 mt-0.5' : 'font-bold text-black'}">全球訂閱轉換率與淨留存</h3>
+          </div>
+          ${sparklineSVG}
+        </div>
+      `;
+
+      const card2Content = state.sparkline
+        ? `<div class="w-full mt-2">
+             <div class="flex items-baseline justify-between mb-1">
+               <span class="text-xl font-semibold text-slate-900 tabular-nums">99.99<span class="text-xs font-normal text-slate-400">%</span></span>
+               <span class="text-xs font-mono text-emerald-600">SLA 達標</span>
+             </div>
+             <div class="grid grid-cols-12 gap-1 pt-1">
+               ${Array.from({length: 12}).map((_, i) => `<div class="h-4 rounded-sm ${i === 8 ? 'bg-amber-400' : 'bg-emerald-500/80'}"></div>`).join('')}
+             </div>
+           </div>`
+        : `<div class="my-2 text-3xl">🚀</div>
+           <div class="text-sm font-bold text-green-600">系統超快 99.99%</div>`;
+
+      const card2HTML = `
+        <div class="${spanB} ${cardShell} ${alignClass} min-h-[155px]">
+          <div class="w-full">
+            <span class="text-xs font-medium ${state.anchor ? 'text-slate-400' : 'font-bold text-black'}">可用性監控</span>
+            <h3 class="text-sm font-semibold ${state.anchor ? 'text-slate-900 mt-0.5' : 'font-bold text-black'}">近 12 小時節點健康度</h3>
+          </div>
+          ${card2Content}
+        </div>
+      `;
+
+      const feedFadeOverlay = state.fade
+        ? `<div class="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white via-white/85 to-transparent"></div>`
+        : '';
+
+      const card3HTML = `
+        <div class="${spanC} ${cardShell} ${alignClass} min-h-[168px]">
+          <div class="w-full mb-2">
+            <span class="text-xs font-medium ${state.anchor ? 'text-slate-400' : 'font-bold text-black'}">即時事件流</span>
+            <h3 class="text-sm font-semibold ${state.anchor ? 'text-slate-900 mt-0.5' : 'font-bold text-black'}">金鑰存取稽核紀錄</h3>
+          </div>
+          <div class="w-full space-y-1.5 text-left font-mono text-xs">
+            <div class="px-2 py-1 rounded bg-slate-50 text-slate-700 truncate">15:19 · key_live_9a8f 簽署成功</div>
+            <div class="px-2 py-1 rounded bg-slate-50 text-slate-600 truncate">15:18 · webhook_retry 200 OK</div>
+            <div class="px-2 py-1 rounded bg-slate-50 text-slate-400 truncate">15:14 · tls_cert 自動展期完成</div>
+          </div>
+          ${feedFadeOverlay}
+        </div>
+      `;
+
+      let card4Inner = '';
+      if (sampleLoaded) {
+        card4Inner = `
+          <div class="w-full text-left">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-emerald-700 bg-emerald-500/10 px-2 py-0.5 rounded-full">✓ 已載入範例規則</span>
+              <button onclick="sampleLoaded=false; render();" class="text-xs text-slate-400 hover:text-slate-700">重置為空狀態</button>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-900/5 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-semibold text-slate-900">當 P99 延遲 > 200ms 時自動擴容</div>
+                <div class="text-xs text-slate-400 mt-0.5">觸發目標：us-east-1 · Slack #ops-alerts</div>
+              </div>
+              <span class="px-2 py-0.5 text-xs font-mono rounded bg-indigo-50 text-indigo-600">Active</span>
+            </div>
+          </div>
+        `;
+      } else if (state.emptystate) {
+        card4Inner = `
+          <div class="w-full relative">
+            <div class="space-y-1.5 opacity-45 select-none pointer-events-none mb-2">
+              <div class="p-2 rounded-lg bg-slate-100 border border-dashed border-slate-300 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-indigo-400"></div>
+                  <div class="h-2.5 w-36 bg-slate-300 rounded"></div>
+                </div>
+                <div class="h-3 w-10 bg-emerald-200 rounded"></div>
+              </div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-dashed border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                  <div class="h-2.5 w-28 bg-slate-200 rounded"></div>
+                </div>
+                <div class="h-3 w-10 bg-slate-200 rounded"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-slate-500">尚未設定自動化熔斷規則</span>
+              <button onclick="loadSampleData()" class="px-2.5 py-1 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition active:scale-95">
+                + 載入範例規則
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        card4Inner = `
+          <div class="w-full py-4 flex flex-col items-center justify-center text-center">
+            <div class="text-2xl mb-1">📭</div>
+            <div class="text-xs font-bold text-gray-500">NO DATA FOUND</div>
+            <div class="text-xs text-gray-400">目前沒有任何自動化規則資料</div>
+          </div>
+        `;
+      }
+
+      const card4HTML = `
+        <div class="${spanD} ${cardShell} ${alignClass} min-h-[168px]">
+          <div class="w-full mb-1">
+            <span class="text-xs font-medium ${state.anchor ? 'text-slate-400' : 'font-bold text-black'}">自動化防護</span>
+            <h3 class="text-sm font-semibold ${state.anchor ? 'text-slate-900 mt-0.5' : 'font-bold text-black'}">異常流量自動熔斷規則</h3>
+          </div>
+          ${card4Inner}
+        </div>
+      `;
+
+      grid.innerHTML = card1HTML + card2HTML + card3HTML + card4HTML;
+    }
+
+    render();
+  </script>
+</body>
+</html>

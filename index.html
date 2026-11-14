@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UI/UX 架構師品味與 Unslop 實戰學院 (Course 1–6)</title>
+  <title>UI/UX 架構師品味與 Unslop 實戰學院 (Course 1–7)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -31,7 +31,7 @@
           </div>
           <div>
             <h1 class="text-sm font-semibold text-zinc-100 tracking-tight">UI/UX Unslop 實戰學院</h1>
-            <p class="text-xs text-zinc-400">6 堂互動式真實頁面訓練 · 支援數字鍵 <kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">1</kbd>–<kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">6</kbd> 快速切換</p>
+            <p class="text-xs text-zinc-400">7 堂互動式真實頁面訓練 · 支援數字鍵 <kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">1</kbd>–<kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">7</kbd> 快速切換</p>
           </div>
         </div>
         <a id="direct-link-mobile" href="course1.html" target="_blank" class="md:hidden px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-800 text-zinc-300 ring-1 ring-white/10">
@@ -58,6 +58,9 @@
         </button>
         <button onclick="switchCourse('course6')" id="tab-course6" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
           Course 6 · 高密度資料表
+        </button>
+        <button onclick="switchCourse('course7')" id="tab-course7" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 7 · Bento 與空狀態
         </button>
         <button onclick="switchCourse('playbook')" id="tab-playbook" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
           📖 總覽手冊
@@ -187,6 +190,20 @@
             <li>• 勾選列時才從底部升起情境式批量操作島</li>
           </ul>
         </div>
+
+        <div onclick="switchCourse('course7')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-rose-500/15 text-rose-300">Course 7 · Lv.7</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">Bento 不對稱權重與藍圖空狀態</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 打破 6:6 均分豆腐格，改用 7:5 主從跨欄</li>
+            <li>• 編輯式左上錨定 + 底部數據沉澱</li>
+            <li>• 內嵌 SVG 微型趨勢線取代裝飾性大圖示</li>
+            <li>• 半透明藍圖預演骨架 + 一鍵載入範例空狀態</li>
+          </ul>
+        </div>
       </div>
     </div>
   </main>
@@ -223,10 +240,15 @@
         badge: 'COURSE 6 · Lv.6',
         desc: '高密度資料表格：左右視覺掃描軸線、低語式表頭、雙行複合儲存格與底部情境浮動島'
       },
+      course7: {
+        file: 'course7.html',
+        badge: 'COURSE 7 · Lv.7',
+        desc: 'Bento 與空狀態：7:5 不對稱視覺權重、左上編輯錨定、內嵌 SVG 趨勢線與藍圖預演式空狀態'
+      },
       playbook: {
         file: null,
         badge: 'PLAYBOOK · 總覽',
-        desc: '全部 6 堂課的核心設計規則速查表（點擊任一卡片立即進入實驗室）'
+        desc: '全部 7 堂課的核心設計規則速查表（點擊任一卡片立即進入實驗室）'
       }
     };
 
@@ -279,7 +301,7 @@
     // Keyboard shortcuts 1-6 and P
     window.addEventListener('keydown', (e) => {
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-      if (e.key >= '1' && e.key <= '6') {
+      if (e.key >= '1' && e.key <= '7') {
         switchCourse('course' + e.key);
       } else if (e.key.toLowerCase() === 'p') {
         switchCourse('playbook');

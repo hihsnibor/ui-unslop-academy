@@ -64,3 +64,14 @@
   3. **廢除斑馬紋與垂直格線 (No Zebra / No Vertical Borders)**：移除深淺交錯斑馬紋與垂直邊框，改用極淡水平分割線 `divide-y divide-slate-100` 搭配整列懸停 `hover:bg-slate-50/80`。
   4. **雙行複合儲存格 (Composite Cell Folding)**：將強關聯欄位（如「公司名稱 + 電子信箱」或「商品名稱 + SKU」）上下疊合於同一欄，減少水平欄數、消滅橫向捲軸。
   5. **情境式底部浮動島 (Contextual Floating Action Island)**：移除表格上方永遠顯示的灰色禁用批量按鈕；僅在勾選 `>= 1` 列時，才從畫面底部平滑升起深色高對比操作島（`bg-slate-900 text-white shadow-xl`）。
+
+---
+
+## 課程 7：Bento Grid 不對稱視覺權重與藍圖預演空狀態 (Lv.7 Bento Hierarchy & Blueprint Empty States)
+- **檔案範例**：[course7.html](file:///Users/robin/Documents/antigravity/Learn/course7.html)
+- **5 大版面編排與空狀態法則**：
+  1. **不對稱視覺權重 (Asymmetric Span Weighting)**：禁止永遠使用 `6:6`（2x2 或 3x3）均分豆腐格；核心指標應佔據 `col-span-7` 或 `col-span-8` 主舞台，次要狀態佔 `col-span-5` 或 `col-span-4`，建立明確的第一視覺錨點。
+  2. **編輯式左上錨定 (Editorial Top-Left Anchoring)**：廢除簡報大字報式的全置中（`text-center items-center`），改用 `flex-col justify-between items-start text-left`，將標題錨定於左上、數據與圖表沉澱於卡片底部。
+  3. **內嵌微型趨勢線取代假圖示 (Inline Sparklines vs. Decorative Emoji)**：移除毫無資訊量的 🚀/💰 大圖示，改放真實 SVG 微型走勢線（Sparkline）或 12 格可用性健康度條。
+  4. **藍圖預演式空狀態 (Blueprint / Ghost Skeleton Empty State)**：禁止只寫死寂的 `No Data Found`；背景應渲染半透明虛線示意骨架（預告有資料時的結構），並附上「+ 載入範例規則」一鍵啟動 CTA。
+  5. **漸進式邊界消融 (Bottom Mask Fade-Out)**：Bento 卡片內的動態列表或圖表，底部應加上漸層遮罩 `bg-gradient-to-t from-white via-white/85 to-transparent`，消除生硬切邊感。
