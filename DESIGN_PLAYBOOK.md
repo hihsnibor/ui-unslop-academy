@@ -86,3 +86,25 @@
   3. **標註選填而非滿屏紅星 (Mark Optional, Not Required)**：當表單 80% 欄位都是必填時，移除刺眼的紅色 `*`，改為只在少數選填欄位旁標註溫和的 `(選填)`。
   4. **金鑰遮罩與原位複製變形 (Masked Secret & In-Place Copy Morph)**：敏感 Token 預設僅露出首尾 4 碼，點擊複製時按鈕在原位定寬切換為 `✓ 已複製`（1.4 秒後復原），禁止彈出阻斷視線的 `alert()`。
   5. **阻力匹配：長按充能銷毀 (Hold-to-Delete Charge Bar)**：使用者對傳統 `确定要刪除嗎？` 彈窗已產生肌肉記憶誤按；高風險不可逆操作可採用「長按 1 秒充能條 (`Hold-to-Confirm`)」，提供物理級防呆且零視窗跳轉。
+
+---
+
+## 課程 9：SaaS 定價頁轉換心理學與視覺錨定工藝 (Lv.9 High-Converting Pricing Psychology)
+- **檔案範例**：[course9.html](file:///Users/robin/Documents/antigravity/Learn/course9.html)
+- **5 大定價與商業轉換法則**：
+  1. **單一主推視覺錨定 (Single Primary CTA & Hero Elevation)**：嚴禁三個方案卡片都放深色主按鈕（造成選擇癱瘓）；僅主推方案（如 Pro）使用 `ring-2 ring-slate-900` 與深色主 CTA，其餘方案按钮降階為淺灰次要樣式 `bg-slate-100 text-slate-700`。
+  2. **年繳折扣膠囊與等寬跳字 (Annual Billing Incentive & Tabular Morph)**：在「月繳 / 年繳」切換器旁直接內嵌 `bg-emerald-500/20 text-emerald-300` 的 `-20%` 膠囊，價格數字強制套用 `tabular-nums`。
+  3. **增量式功能清單 (Incremental Feature Delta)**：禁止三欄重複抄寫相同的基礎功能；第 2、3 欄開頭應標註 `包含 Starter 所有功能，外加：`，只列出升級差異點。
+  4. **可預測用量滑桿取代隱藏超額費 (Predictable Usage Slider)**：移除令買家恐懼的「超額另計」紅字小字，提供互動式用量滑桿即時試算對應月費。
+  5. **零風險微承諾文案 (Risk-Reversal Micro-Copy)**：在主 CTA 按鈕正下方加入 `text-xs text-slate-400` 的微承諾（如 `免綁卡 · 14 天試用 · 隨時一鍵取消`），直接消除結帳阻力。
+
+---
+
+## 課程 10：AI 原生介面設計 — 推理軌跡、引用膠囊與人機核准流 (Lv.10 AI-Native UX Craft)
+- **檔案範例**：[course10.html](file:///Users/robin/Documents/antigravity/Learn/course10.html)
+- **5 大 AI 原生產品介面法則**：
+  1. **可摺疊推理軌跡取代死寂轉圈 (Collapsible Thought Trace)**：廢除呆板的 `AI 思考中...` 與 `🤖` 機器人頭像；改用顯示真實工具呼叫步驟與耗時（如 `已檢索 2 份日誌 · 240ms ▼`）的可展開狀態匣。
+  2. **內嵌編號來源膠囊取代裸露長網址 (Inline Citation Pills)**：嚴禁在生成段落中直接貼上長串 `https://...` 破壞排版；改用緊湊等寬膠囊 `[1] redis-log` 並於 Hover 時顯示來源摘要。
+  3. **人機協作：結構化 Diff 核准卡 (Human-in-the-Loop Diff Card)**：當 AI 即將執行外部寫入、扣款或變更設定時，必須先渲染紅綠對照的 Diff 核准卡（`- 16GB` / `+ 32GB`）與明確的「核准並執行」按鈕，嚴禁黑箱自動執行。
+  4. **情境式局部微調膠囊 (Contextual Scoped Refinement Pills)**：在回應底部提供一鍵微調按鈕（如 `✂ 精簡為一句話`、`匯出 RCA 報告`），免去使用者重打 Prompt 的負擔。
+  5. **編輯式無泡泡排版與耗時註腳 (Bubble-Free Editorial Layout & Telemetry)**：移除傳統聊天室的彩色對話泡泡框，改用文件級排版並在右下角附上低調的 `tabular-nums` Token 與秒數註腳。

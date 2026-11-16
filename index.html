@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UI/UX 架構師品味與 Unslop 實戰學院 (Course 1–8)</title>
+  <title>UI/UX 架構師品味與 Unslop 實戰學院 (Course 1–10 · 50 條黃金律)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -31,7 +31,7 @@
           </div>
           <div>
             <h1 class="text-sm font-semibold text-zinc-100 tracking-tight">UI/UX Unslop 實戰學院</h1>
-            <p class="text-xs text-zinc-400">8 堂互動式真實頁面訓練 · 支援數字鍵 <kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">1</kbd>–<kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">8</kbd> 快速切換</p>
+            <p class="text-xs text-zinc-400">10 堂互動式真實頁面訓練（50 條黃金律）· 支援數字鍵 <kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">1</kbd>–<kbd class="px-1 py-0.2 bg-zinc-800 rounded text-zinc-300 font-mono">0</kbd> 快速切換</p>
           </div>
         </div>
         <a id="direct-link-mobile" href="course1.html" target="_blank" class="md:hidden px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-800 text-zinc-300 ring-1 ring-white/10">
@@ -64,6 +64,12 @@
         </button>
         <button onclick="switchCourse('course8')" id="tab-course8" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
           Course 8 · 表單與防呆
+        </button>
+        <button onclick="switchCourse('course9')" id="tab-course9" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 9 · 定價轉換學
+        </button>
+        <button onclick="switchCourse('course10')" id="tab-course10" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          Course 10 · AI 原生介面
         </button>
         <button onclick="switchCourse('playbook')" id="tab-playbook" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
           📖 總覽手冊
@@ -104,7 +110,7 @@
     <div id="playbook-wrapper" class="hidden flex-1 w-full rounded-2xl p-6 bg-zinc-900/90 ring-1 ring-white/[0.08] shadow-2xl space-y-6">
       <div class="border-b border-white/[0.07] pb-4 flex items-center justify-between">
         <div>
-          <h2 class="text-base font-semibold text-zinc-100">UI/UX 架構師品味與 Unslop 29 條黃金律</h2>
+          <h2 class="text-base font-semibold text-zinc-100">UI/UX 架構師品味與 Unslop 50 條黃金律 (Complete 10 Courses)</h2>
           <p class="text-xs text-zinc-400 mt-0.5">點擊任一卡片可直接跳轉至該堂互動實驗室</p>
         </div>
       </div>
@@ -221,6 +227,34 @@
             <li>• 阻力匹配：長按 1 秒充能條取代傳統彈窗</li>
           </ul>
         </div>
+
+        <div onclick="switchCourse('course9')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-emerald-500/15 text-emerald-300">Course 9 · Lv.9</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">SaaS 定價頁轉換心理學與視覺錨定</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 單一主推方案高亮 (<code class="text-zinc-200">Single Primary CTA</code>)</li>
+            <li>• 年繳 <code class="text-zinc-200">-20%</code> 綠膠囊與等寬數字跳字</li>
+            <li>• 增量式功能清單：「包含 Starter 所有功能，外加：」</li>
+            <li>• 可預測用量滑桿與零風險微承諾文案</li>
+          </ul>
+        </div>
+
+        <div onclick="switchCourse('course10')" class="cursor-pointer p-4 rounded-xl bg-zinc-800/60 hover:bg-zinc-800 ring-1 ring-white/[0.07] transition group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono rounded bg-violet-500/15 text-violet-300">Course 10 · Lv.10</span>
+            <span class="text-xs text-zinc-500 group-hover:text-zinc-300">進入實戰 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">AI 原生介面：推理軌跡與人機核准流</h3>
+          <ul class="text-xs text-zinc-400 space-y-1.5">
+            <li>• 可摺疊工具推理軌跡取代死板「AI 思考中」</li>
+            <li>• 內嵌編號引用膠囊 <code class="text-zinc-200">[1]</code> 取代裸露長網址</li>
+            <li>• 外部寫入前必彈出紅綠 Diff 人機核准卡</li>
+            <li>• 情境式微調膠囊與無泡泡編輯式排版</li>
+          </ul>
+        </div>
       </div>
     </div>
   </main>
@@ -267,10 +301,20 @@
         badge: 'COURSE 8 · Lv.8',
         desc: '表單與防呆：消滅少選項下拉選單、網域前綴內嵌、原位複製回饋與「長按 1 秒充能銷毀」防呆'
       },
+      course9: {
+        file: 'course9.html',
+        badge: 'COURSE 9 · Lv.9',
+        desc: '定價頁轉換心理學：單一主推錨定、年繳省 20% 膠囊、增量式功能清單、用量滑桿與零風險微承諾'
+      },
+      course10: {
+        file: 'course10.html',
+        badge: 'COURSE 10 · Lv.10',
+        desc: 'AI 原生介面工藝：可摺疊推理軌跡、內嵌來源引用膠囊、紅綠 Diff 人機核准卡與情境微調按鈕'
+      },
       playbook: {
         file: null,
-        badge: 'PLAYBOOK · 總覽',
-        desc: '全部 8 堂課的核心設計規則速查表（點擊任一卡片立即進入實驗室）'
+        badge: 'PLAYBOOK · 50 條黃金律',
+        desc: '全部 10 堂課（50 條 Unslop 黃金律）速查表 — 點擊任一卡片立即進入實驗室'
       }
     };
 
@@ -323,8 +367,10 @@
     // Keyboard shortcuts 1-6 and P
     window.addEventListener('keydown', (e) => {
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-      if (e.key >= '1' && e.key <= '8') {
+      if (e.key >= '1' && e.key <= '9') {
         switchCourse('course' + e.key);
+      } else if (e.key === '0') {
+        switchCourse('course10');
       } else if (e.key.toLowerCase() === 'p') {
         switchCourse('playbook');
       }

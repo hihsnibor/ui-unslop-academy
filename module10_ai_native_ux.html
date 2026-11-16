@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模組 10（Lv.10 最終章）：AI 原生介面工藝 — 推理軌跡、引用膠囊與人機核准流</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+    <!-- Top Header -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-700">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 text-xs font-semibold rounded-md bg-violet-500/15 text-violet-400">AI 原生介面 Lv.10</span>
+        <h2 class="text-sm font-semibold text-white">AI 原生產品工藝 — 推理步驟揭露、內嵌引用膠囊與人機協作核准卡</h2>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="applyPreset('slop')" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition">
+          AI 套版聊天室 (0/5)
+        </button>
+        <button onclick="applyPreset('craft')" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition">
+          Claude / Perplexity / Cursor 級工藝 (5/5)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+      <!-- Left: Real Page AI Agent Workspace Stage (7 cols) -->
+      <div class="md:col-span-7 bg-slate-100/95 rounded-xl p-4 flex flex-col justify-center min-h-[390px] text-slate-900">
+        <div id="ai-card" class="w-full max-w-md mx-auto bg-white rounded-xl p-4 border-2 border-purple-400 shadow-md transition-all duration-300 space-y-3">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Right: 5 AI-Native UX Switches (5 cols) -->
+      <div class="md:col-span-5 flex flex-col gap-2">
+        <div class="text-xs font-medium text-slate-400 mb-0.5">
+          為什麼 90% 的 AI 產品看起來都像「粗糙的套殼 ChatGPT」？點擊右側開啟 5 大 AI 原生設計法則：
+        </div>
+
+        <button onclick="toggleRule('reasoning')" class="w-full text-left p-2.5 rounded-xl border border-slate-700 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">1. 可摺疊推理軌跡取代「AI 思考中...」 (Thought Trace)</div>
+            <div class="text-xs text-slate-400">將死板的轉圈圈改為可展開的工具調用步驟與耗時標籤 (140ms)</div>
+          </div>
+          <span id="status-reasoning" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('citations')" class="w-full text-left p-2.5 rounded-xl border border-slate-700 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">2. 內嵌來源引用膠囊取代裸露長網址 (Citation Pills)</div>
+            <div class="text-xs text-slate-400">禁止在段落中貼上長串 https://...，改用緊湊編號膠囊並支援點擊預覽</div>
+          </div>
+          <span id="status-citations" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('hitl')" class="w-full text-left p-2.5 rounded-xl border border-slate-700 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">3. 人機協作：結構化 Diff 核准卡 (Human-in-the-Loop)</div>
+            <div class="text-xs text-slate-400">AI 變更外部設定前，必須呈現新舊數值 Diff 對照卡供使用者一鍵放行</div>
+          </div>
+          <span id="status-hitl" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('refine')" class="w-full text-left p-2.5 rounded-xl border border-slate-700 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">4. 情境式微調膠囊取代重打 Prompt (Scoped Refine)</div>
+            <div class="text-xs text-slate-400">提供「精簡為 3 點」「轉為表格」一鍵微調，免去使用者重新打字</div>
+          </div>
+          <span id="status-refine" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0">待修正</span>
+        </button>
+
+        <button onclick="toggleRule('telemetry')" class="w-full text-left p-2.5 rounded-xl border border-slate-700 flex items-start justify-between gap-2 hover:bg-slate-700/60 transition">
+          <div>
+            <div class="text-xs font-semibold text-white">5. 去機器人頭像與精準置信度註腳 (No Robot Avatar)</div>
+            <div class="text-xs text-slate-400">移除廉價的 🤖 機器人頭像與對話泡泡框，改用編輯式排版與等寬耗時註腳</div>
+          </div>
+          <span id="status-telemetry" class="px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0">待修正</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      reasoning: false,
+      citations: false,
+      hitl: false,
+      refine: false,
+      telemetry: false
+    };
+
+    let traceOpen = false;
+    let approved = false;
+    let refinedMode = 'normal'; // 'normal' | 'concise'
+
+    function toggleTrace() {
+      traceOpen = !traceOpen;
+      render();
+    }
+
+    function approveAction() {
+      approved = true;
+      render();
+    }
+
+    function toggleRefine() {
+      refinedMode = refinedMode === 'normal' ? 'concise' : 'normal';
+      render();
+    }
+
+    function toggleRule(k) {
+      state[k] = !state[k];
+      approved = false;
+      render();
+    }
+
+    function applyPreset(mode) {
+      const val = mode === 'craft';
+      Object.keys(state).forEach(k => state[k] = val);
+      approved = false;
+      render();
+    }
+
+    function render() {
+      Object.keys(state).forEach(k => {
+        const pill = document.getElementById('status-' + k);
+        if (state[k]) {
+          pill.textContent = '已優化';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-400 shrink-0';
+        } else {
+          pill.textContent = '待修正';
+          pill.className = 'px-2 py-0.5 text-xs rounded bg-rose-500/20 text-rose-400 shrink-0';
+        }
+      });
+
+      const card = document.getElementById('ai-card');
+      card.className = state.telemetry
+        ? 'w-full max-w-md mx-auto bg-white rounded-2xl p-5 ring-1 ring-slate-900/5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_28px_-4px_rgba(15,23,42,0.06)] transition-all duration-300 space-y-3'
+        : 'w-full max-w-md mx-auto bg-white rounded-xl p-4 border-2 border-purple-400 shadow-md transition-all duration-300 space-y-3';
+
+      // 1. Reasoning Trace vs Spinner / Robot header
+      let reasoningHTML = '';
+      if (state.reasoning) {
+        reasoningHTML = `
+          <div class="rounded-xl bg-slate-50/90 ring-1 ring-inset ring-slate-200/70 px-3 py-2">
+            <button onclick="toggleTrace()" class="w-full flex items-center justify-between text-xs text-slate-600 font-medium">
+              <span class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                已檢索 2 份叢集日誌與帳單指標
+              </span>
+              <span class="font-mono text-slate-400 tabular-nums">${traceOpen ? '收合 ▲' : '240ms ▼'}</span>
+            </button>
+            ${traceOpen ? `
+              <div class="mt-2 pt-2 border-t border-slate-200/60 space-y-1 font-mono text-xs text-slate-500">
+                <div>1. query_metrics(cluster="ap-east-1") → 110ms</div>
+                <div>2. inspect_redis_eviction_policy() → 130ms</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      } else {
+        reasoningHTML = `
+          <div class="flex items-center gap-2 bg-purple-100 p-2 rounded-lg border border-purple-300">
+            <span class="text-xl">🤖</span>
+            <span class="text-xs font-bold text-purple-900">AI 小助手已經幫您思考完畢囉！✨</span>
+          </div>
+        `;
+      }
+
+      // 2. Citations & Answer Body
+      const bodyCopy = refinedMode === 'concise'
+        ? '東京節點延遲升高主因為 Redis 快取記憶體達 94% 觸發逐出策略'
+        : '分析顯示 ap-east-1 延遲飆升是因為尖峰時段 Redis 記憶體使用率達 94%，觸發了 volatile-lru 頻繁逐出金鑰';
+
+      let answerHTML = '';
+      if (state.citations) {
+        answerHTML = `
+          <div class="text-xs leading-relaxed text-slate-700">
+            ${bodyCopy}
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 mx-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-300/70 cursor-pointer hover:bg-indigo-50 hover:text-indigo-700 transition" title="來源：grafana.internal/d/redis-01 (Line 42)">
+              [1] redis-log
+            </span>
+            。建議立即將快取上限由 16GB 調升至 32GB
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 mx-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-300/70 cursor-pointer hover:bg-indigo-50 hover:text-indigo-700 transition" title="來源：aws-pricing-calc #mem-tier">
+              [2] cost-est
+            </span>。
+          </div>
+        `;
+      } else {
+        answerHTML = `
+          <div class="text-xs font-semibold text-black bg-gray-100 p-2.5 rounded-lg border border-gray-300 break-all">
+            ${bodyCopy}（參考網址：https://internal-monitoring.company.com/logs/2026/11/15/redis-cluster-eviction-dump?node=ap-east-1）。
+          </div>
+        `;
+      }
+
+      // 3. Human-in-the-Loop Diff Approval Card
+      let hitlHTML = '';
+      if (approved) {
+        hitlHTML = `
+          <div class="px-3 py-2 rounded-xl bg-emerald-50/70 ring-1 ring-inset ring-emerald-500/25 flex items-center justify-between text-xs text-emerald-900">
+            <span>✓ 已核准並完成 Redis 32GB 無停機擴容</span>
+            <button onclick="approved=false; render();" class="text-xs underline text-emerald-700">重置</button>
+          </div>
+        `;
+      } else if (state.hitl) {
+        hitlHTML = `
+          <div class="rounded-xl bg-slate-50 ring-1 ring-inset ring-slate-200/80 p-3">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-semibold text-slate-900">待核准變更：調整生產環境設定</span>
+              <span class="px-1.5 py-0.2 text-xs font-mono rounded bg-amber-500/15 text-amber-800">需人工確認</span>
+            </div>
+            <div class="font-mono text-xs bg-white p-2 rounded-lg ring-1 ring-slate-900/5 mb-2.5 space-y-0.5">
+              <div class="text-rose-600">- maxmemory: 16GB ($69/mo)</div>
+              <div class="text-emerald-600">+ maxmemory: 32GB ($119/mo)</div>
+            </div>
+            <div class="flex items-center justify-end gap-2">
+              <button class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-lg transition">拒絕</button>
+              <button onclick="approveAction()" class="px-3 py-1 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition active:scale-95">
+                核准並執行變更 →
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        hitlHTML = `
+          <div class="p-2 bg-red-100 border border-red-400 rounded text-xs font-bold text-red-700">
+            ⚠️ AI 已經自動幫您把伺服器升級到 $119/月 並扣款成功！
+          </div>
+        `;
+      }
+
+      // 4 & 5. Contextual Refinement Pills + Telemetry Footer
+      let footerHTML = '';
+      if (state.refine || state.telemetry) {
+        footerHTML = `
+          <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+            ${state.refine ? `
+              <div class="flex items-center gap-1.5">
+                <button onclick="toggleRefine()" class="px-2 py-0.5 text-xs font-medium rounded-md bg-slate-100 hover:bg-slate-200/80 text-slate-700 transition">
+                  ${refinedMode === 'concise' ? '↺ 展開完整分析' : '✂ 精簡為一句話'}
+                </button>
+                <button class="px-2 py-0.5 text-xs font-medium rounded-md bg-slate-100 hover:bg-slate-200/80 text-slate-700 transition">
+                  匯出 RCA 報告
+                </button>
+              </div>
+            ` : '<div></div>'}
+            ${state.telemetry ? `
+              <span class="text-xs font-mono text-slate-400 tabular-nums">312 tokens · 0.8s</span>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      card.innerHTML = reasoningHTML + answerHTML + hitlHTML + footerHTML;
+    }
+
+    render();
+  </script>
+</body>
+</html>
